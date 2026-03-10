@@ -1,10 +1,10 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import Register from "./pages/Register";
 
 function App() {
   return (
-    <div className="App">
-    
+    <div>
+      <Register />
     </div>
   );
 }
