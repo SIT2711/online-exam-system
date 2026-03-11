@@ -1,16 +1,17 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
-//import Register from "./pages/LoginForm";
-
+import LoginForm from "./pages/LoginForm";
 
 function App() {
   return (
     <Router>
       <div style={{ background: "#F8F9FA", minHeight: "100vh", padding: "20px" }}>
         <Routes>
-          <Route path="/" element={<div>LoginForm</div> } />
-         
+          {/* Render the actual LoginForm component here */}
+          <Route path="/login" element={<LoginForm />} />  
+          
+          {/* Optional: Add a default route */}
+          <Route path="/" element={<h1>Welcome to Online Exam System</h1>} />
         </Routes>
       </div>
     </Router>
