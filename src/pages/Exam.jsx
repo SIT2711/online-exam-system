@@ -22,22 +22,31 @@ function Exam() {
     e.preventDefault();
     console.log("Exam Created:", examData);
     alert("Exam Created Successfully!");
+    
+    // Reset the form
+    setExamData({
+      examName: "",
+      subject: "",
+      duration: "",
+      totalQuestions: "",
+      startDate: "",
+      endDate: ""
+    });
   };
 
   return (
     <div className="exam-container">
       <div className="exam-card">
         <h2>Create Exam</h2>
-
         <form onSubmit={handleSubmit}>
-
           <label>Exam Name</label>
           <input
             type="text"
             name="examName"
             value={examData.examName}
             onChange={handleChange}
-            required  />
+            required
+          />
 
           <label>Subject</label>
           <input
@@ -85,7 +94,6 @@ function Exam() {
           />
 
           <button type="submit">Create Exam</button>
-
         </form>
       </div>
     </div>
