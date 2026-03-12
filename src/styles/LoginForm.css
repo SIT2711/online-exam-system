@@ -1,5 +1,5 @@
-/* src/styles/RegisterForm.css */
-.register-container {
+/* src/styles/LoginForm.css */
+.login-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -7,7 +7,7 @@
   background: #f1f1f1;
 }
 
-.register-card {
+.login-card {
   background: #fff;
   padding: 30px;
   border-radius: 8px;
