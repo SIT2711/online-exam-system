@@ -1,4 +1,3 @@
-// src/components/LoginForm.js
 import React, { useState } from 'react';
 import '../styles/LoginForm.css'; // Importing the CSS for the LoginForm
 
@@ -62,7 +61,8 @@ function LoginForm() {
           </button>
           {errorMessage && <div className="error-message">{errorMessage}</div>}
           <div className="extra-links">
-            <a href="#">Forgot Password?</a> | <a href="#">Create A new Account</a>
+            <button className="link-button" type="button">Forgot Password?</button> | 
+            <button className="link-button" type="button">Create A new Account</button>
           </div>
         </form>
       </div>

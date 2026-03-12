@@ -4,21 +4,22 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: #f1f1f1;
+  background: #F8F9FA; /* Light gray background */
 }
 
 .login-card {
-  background: #fff;
+  background: #FFFFFF; /* White card background */
   padding: 30px;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for card */
   text-align: center;
-  width: 300px;
+  width: 300px; /* Fixed card width */
 }
 
 h1 {
   margin-bottom: 20px;
   font-size: 24px;
+  color: #333333; /* Dark text for the title */
 }
 
 .form-group {
@@ -29,40 +30,59 @@ label {
   display: block;
   margin-bottom: 5px;
   text-align: left;
+  font-weight: bold;
+  color: #333333; /* Dark text for labels */
 }
 
-input, select {
+input,
+select {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  font-size: 14px;
 }
 
 button {
-  background-color: #4CAF50;
+  background-color: #00BFB2; /* Button color */
   color: white;
   border: none;
   padding: 10px 20px;
-  width: 100%;
+  width: 100%; /* Full width button */
   border-radius: 4px;
   cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px; /* Margin above button */
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: #009F98; /* Darker shade of button color on hover */
 }
 
 .extra-links {
   margin-top: 10px;
+  font-size: 14px;
 }
 
 .extra-links a {
-  color: #0066cc;
+  color: #0066CC; /* Blue link color */
   text-decoration: none;
+  font-weight: bold;
+}
+
+.extra-links a:hover {
+  color: #004D99; /* Darker blue on hover */
 }
 
 .error-message {
   color: red;
   font-size: 14px;
   margin-top: 10px;
+  text-align: center; /* Centered error message */
+}
+
+input:focus,
+select:focus {
+  border-color: #00BFB2; /* Button color for focus */
+  outline: none; /* Remove default outline */
 }
