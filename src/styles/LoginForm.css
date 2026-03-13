@@ -1,10 +1,12 @@
+/* src/styles/LoginForm.css */
+
 .login-container {
   height: 100vh;
-  background: #f2f4f8;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: Arial;
+  background: #f2f4f8;
+  font-family: Arial, sans-serif;
 }
 
 .login-card {
@@ -16,11 +18,12 @@
   text-align: center;
 }
 
-.logo {
+h2 {
   margin-bottom: 20px;
 }
 
-input, select {
+input,
+select {
   width: 100%;
   padding: 10px;
   margin: 8px 0;
@@ -57,4 +60,19 @@ button:hover {
 .links a {
   text-decoration: none;
   color: #007bff;
+}
+
+.extra-links {
+  margin-top: 10px;
+}
+
+.extra-links a {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
 }
