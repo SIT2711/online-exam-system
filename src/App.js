@@ -6,6 +6,7 @@ import AddQuestion from "./pages/AddQuestion";
 import ExamList from "./pages/ExamList";
 import './styles/LoginForm.css';
 import './styles/ExamList.css';
+import Home from './pages/Home';
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
       <div style={{ background: "#F8F9FA", minHeight: "100vh", padding: "20px" }}>
         <Routes>
           {/* Render the actual LoginForm component here */}
+          <Route path="/" element={<Home />} />
 
           <Route path="/login" element={<LoginForm />} /> 
           <Route path="/exams" element={<ExamList/>}/>  
