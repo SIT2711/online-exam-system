@@ -1,5 +1,4 @@
 import React from "react";
-<<<<<<< HEAD
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginForm from "./pages/LoginForm";
 import ExamList from "./pages/ExamList";
@@ -20,20 +19,7 @@ function App() {
         </Routes>
       </div>
     </Router>
-=======
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import AddQuestion from "./pages/AddQuestion";
-import "./App.css";
-
-function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<AddQuestion />} />
-      </Routes>
-    </BrowserRouter>
->>>>>>> c471927e1bd3fc860546647eb9ff6017855c4dd2
-  );
+  )
 }
 
 export default App;
