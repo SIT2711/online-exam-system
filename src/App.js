@@ -1,15 +1,32 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Dashboard from "./pages/Dashboard";
+import LoginForm from "./pages/LoginForm";
+import Exam from "./pages/Exam";
+import AddQuestion from "./pages/AddQuestion";
+import ExamList from "./pages/ExamList";
+
+import './styles/LoginForm.css';
+import './styles/ExamList.css';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/dashboard" element={<Dashboard />} />
-      </Routes>
-    </BrowserRouter>
+    <Router>
+      <div style={{ background: "rgb(248,249,250)", minHeight: "100vh", padding: "20px" }}>
+        <Routes>
+
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/login" element={<LoginForm />} />
+          <Route path="/exams" element={<ExamList />} />
+          <Route path="/exam" element={<Exam />} />
+          <Route path="/addquestion" element={<AddQuestion />} />
+
+          <Route path="/" element={<h1>Welcome to Online Exam System</h1>} />
+
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

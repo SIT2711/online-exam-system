@@ -1,0 +1,59 @@
+.exam-container {
+  background: #F8F9FA;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.exam-card {
+  background: white;
+  padding: 30px;
+  width: 400px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.exam-card h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.exam-card form {
+  display: flex;
+  flex-direction: column;
+}
+
+.exam-card label {
+  margin-top: 10px;
+  font-weight: 500;
+}
+
+.exam-card input {
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+}
+
+.exam-card input:focus {
+  border-color: #00BFB2;
+}
+
+.exam-card button {
+  margin-top: 20px;
+  padding: 10px;
+  border: none;
+  background: #00BFB2;
+  color: white;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.exam-card button:hover {
+  background: #009f95;
+}
