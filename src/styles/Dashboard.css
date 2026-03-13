@@ -1,0 +1,53 @@
+/* Dashboard Page */
+
+.dashboard-container {
+  background-color: #F8F9FA;
+  min-height: 100vh;
+  padding: 40px;
+  text-align: center;
+}
+
+.dashboard-title {
+  font-size: 32px;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+/* Cards Container */
+
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 25px;
+  max-width: 900px;
+  margin: auto;
+}
+
+/* Individual Card */
+
+.dashboard-card {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Card Numbers */
+
+.dashboard-card h2 {
+  font-size: 36px;
+  color: #00BFB2;
+  margin-bottom: 10px;
+}
+
+/* Card Title */
+
+.dashboard-card p {
+  font-size: 18px;
+  color: #555;
+}
