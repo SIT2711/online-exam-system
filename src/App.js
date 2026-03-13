@@ -1,25 +1,16 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LoginForm from "./pages/LoginForm";
-import ExamList from "./pages/ExamList";
-import './styles/LoginForm.css';
-import './styles/ExamList.css';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
-    <Router>
-      <div style={{ background: "#F8F9FA", minHeight: "100vh", padding: "20px" }}>
-        <Routes>
-          {/* Render the actual LoginForm component here */}
-          <Route path="/login" element={<LoginForm />} />
-          <Route path="/exams" element={<ExamList/>}/> 
-          
-          {/* Optional: Add a default route */}
-          <Route path="/" element={<h1>Welcome to Online Exam System</h1>} />
-        </Routes>
-      </div>
-    </Router>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
