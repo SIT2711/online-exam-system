@@ -9,6 +9,7 @@ import ExamList from "./pages/ExamList";
 
 import './styles/LoginForm.css';
 import './styles/ExamList.css';
+import './styles/Dashboard.css';
 
 function App() {
   return (
