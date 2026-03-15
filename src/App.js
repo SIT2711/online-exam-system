@@ -1,18 +1,19 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import StudentDashboard from "./pages/student/StudentDashboard";
+import TeacherDashboard from "./pages/teacher/TeacherDashboard";
+
 import Dashboard from "./pages/Dashboard";
-import AdminDashboard from "./pages/AdminDashboard";
-import StudentDashboard from "./pages/StudentDashboard";
-import TeacherDashboard from "./pages/TeacherDashboard";
 import LoginForm from "./pages/LoginForm";
 import Exam from "./pages/Exam";
 import AddQuestion from "./pages/AddQuestion";
 import ExamList from "./pages/ExamList";
 
-import './styles/LoginForm.css';
-import './styles/ExamList.css';
-import './styles/Dashboard.css';
+import "./styles/LoginForm.css";
+import "./styles/ExamList.css";
+import "./styles/Dashboard.css";
 
 function App() {
   return (
@@ -21,9 +22,10 @@ function App() {
         <Routes>
 
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/student" element={<StudentDashboard />} />
-          <Route path="/teacher" element={<TeacherDashboard />} />
+          <Route path="/admindashboard" element={<AdminDashboard />} />
+          <Route path="/studentdashboard" element={<StudentDashboard />} />
+          <Route path="/teacherdashboard" element={<TeacherDashboard />} />
+
           <Route path="/login" element={<LoginForm />} />
           <Route path="/exams" element={<ExamList />} />
           <Route path="/exam" element={<Exam />} />
