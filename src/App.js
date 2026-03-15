@@ -1,5 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import StudentDashboard from "./pages/student/StudentDashboard";
+import TeacherDashboard from "./pages/teacher/TeacherDashboard";
 
 import Dashboard from "./pages/Dashboard";
 import LoginForm from "./pages/LoginForm";
@@ -18,6 +21,9 @@ function App() {
         <Routes>
 
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/admindashboard" element={<AdminDashboard />} />
+          <Route path="/studentdashboard" element={<StudentDashboard />} />
+          <Route path="/teacherdashboard" element={<TeacherDashboard />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/exams" element={<ExamList />} />
           <Route path="/exam" element={<Exam />} />
