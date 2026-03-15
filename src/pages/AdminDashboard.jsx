@@ -1,20 +1,37 @@
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import "../styles/Dashboard.css";
+import Navbar from "../components/Navbar";
 
 function AdminDashboard() {
-  const navigate = useNavigate();
-
   return (
-    <div className="login-container">
-      <div className="login-box">
-        <h1>Welcome Admin</h1>
+    <>
+      <Navbar />
+      <div className="dashboard-container">
+        <h1 className="dashboard-title">Admin Dashboard</h1>
 
-        <button onClick={() => navigate("/create-exam")}>
-          Create Exam
-        </button>
+        <div className="dashboard-cards">
+          <div className="dashboard-card">
+            <h2>25</h2>
+            <p>Total Exams</p>
+          </div>
 
-        <button onClick={() => navigate("/")}>Logout</button>
+          <div className="dashboard-card">
+            <h2>120</h2>
+            <p>Total Students</p>
+          </div>
+
+          <div className="dashboard-card">
+            <h2>15</h2>
+            <p>Total Teachers</p>
+          </div>
+
+          <div className="dashboard-card">
+            <h2>320</h2>
+            <p>Total Questions</p>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

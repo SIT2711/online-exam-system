@@ -1,39 +1,28 @@
 import React from "react";
+import "../styles/Dashboard.css";
+import Navbar from "../components/Navbar";
 
 function TeacherDashboard() {
-
-  const dashboardData = [
-    { title: "Total Exams", value: 10 },
-    { title: "Upcoming Exams", value: 4 },
-    { title: "Completed Exams", value: 6 },
-    { title: "Results", value: 5 }
-  ];
-
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Teacher Dashboard</h2>
+    <>
+      <Navbar />
+      <div className="dashboard-container">
+        <h1 className="dashboard-title">Teacher Dashboard</h1>
+        <p>Welcome! Manage your exams and questions here.</p>
 
-      <div style={{ display: "flex", gap: "20px", marginTop: "20px" }}>
-        {dashboardData.map((item, index) => (
-          <div
-            key={index}
-            style={{
-              border: "1px solid #ddd",
-              borderRadius: "10px",
-              padding: "20px",
-              width: "180px",
-              textAlign: "center",
-              boxShadow: "0px 2px 6px rgba(0,0,0,0.2)"
-            }}
-          >
-            <h3>{item.title}</h3>
-            <p style={{ fontSize: "26px", fontWeight: "bold" }}>
-              {item.value}
-            </p>
+        <div className="dashboard-cards">
+          <div className="dashboard-card">
+            <h2>8</h2>
+            <p>Created Exams</p>
           </div>
-        ))}
+
+          <div className="dashboard-card">
+            <h2>50</h2>
+            <p>Questions Added</p>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

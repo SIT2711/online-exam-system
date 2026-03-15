@@ -2,6 +2,9 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Dashboard from "./pages/Dashboard";
+import AdminDashboard from "./pages/AdminDashboard";
+import StudentDashboard from "./pages/StudentDashboard";
+import TeacherDashboard from "./pages/TeacherDashboard";
 import LoginForm from "./pages/LoginForm";
 import Exam from "./pages/Exam";
 import AddQuestion from "./pages/AddQuestion";
@@ -18,6 +21,9 @@ function App() {
         <Routes>
 
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/student" element={<StudentDashboard />} />
+          <Route path="/teacher" element={<TeacherDashboard />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/exams" element={<ExamList />} />
           <Route path="/exam" element={<Exam />} />
