@@ -1,10 +1,9 @@
 import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import "../styles/Result.css";
 
 const Result = () => {
   const location = useLocation();
-  const navigate = useNavigate();
 
   const result = location.state || {
     studentName: "Rahul",
@@ -43,10 +42,6 @@ const Result = () => {
         <hr />
 
         <h3 className="score">Score: {scorePercentage}%</h3>
-
-        <button className="home-btn" onClick={() => navigate("/")}>
-          Go Home
-        </button>
       </div>
     </div>
   );
