@@ -1,32 +1,33 @@
 /* Page background */
 .examPage-container {
-  background: #F8F9FA;
+  background: linear-gradient(135deg, #e0f7fa, #f8f9fa);
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: Arial, sans-serif;
+  font-family: "Segoe UI", Arial, sans-serif;
 }
 
 /* Exam card */
 .examPage-card {
-  background: #FFFFFF;
+  background: #ffffff;
   width: 550px;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  color: #333333;
+  padding: 35px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 
 /* Title */
 .examPage-card h2 {
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  color: #00BFB2;
 }
 
 /* Question number */
 .examPage-card p {
   margin-bottom: 10px;
+  color: #666;
 }
 
 /* Question text */
@@ -36,28 +37,44 @@
 
 /* Options container */
 .examPage-options {
-  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 /* Each option */
 .examPage-option {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-  font-size: 16px;
+  padding: 12px 15px;
+  background: #f5f5f5;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
-/* Fix radio button width */
+/* Option hover */
+.examPage-option:hover {
+  background: #e0f7fa;
+}
+
+/* Radio button */
 .examPage-option input[type="radio"] {
-  width: auto !important;
-  margin: 0;
+  margin-right: 12px;
+  width: 16px;
+  height: 16px;
   cursor: pointer;
 }
 
 /* Option text */
 .examPage-option span {
-  cursor: pointer;
+  font-size: 16px;
+}
+
+/* Selected option highlight */
+.examPage-option input[type="radio"]:checked + span {
+  font-weight: bold;
+  color: #00BFB2;
 }
 
 /* Button section */
@@ -76,9 +93,10 @@
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
+  transition: 0.2s;
 }
 
-/* Hover effect */
+/* Button hover */
 .examPage-buttons button:hover {
   background: #009e94;
 }
