@@ -31,7 +31,7 @@ function App() {
           <Route path="/exam" element={<Exam />} />
           <Route path="/addquestion" element={<AddQuestion />} />
 
-          <Route path="/" element={<h1>Welcome to Online Exam System</h1>} />
+          <Route path="/" element={<LoginForm />} />
 
         </Routes>
       </div>
