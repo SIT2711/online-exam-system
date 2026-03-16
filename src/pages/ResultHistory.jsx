@@ -10,7 +10,7 @@ function ResultHistory() {
       date: "20 Mar"
     },
     {
-      examName: "Physics Quiz",
+      examName: "Physics Test",
       score: "7/10",
       percentage: "70%",
       date: "18 Mar"
@@ -20,6 +20,18 @@ function ResultHistory() {
       score: "9/10",
       percentage: "90%",
       date: "15 Mar"
+    },
+    {
+      examName: "Biology Test",
+      score: "6/10",
+      percentage: "60%",
+      date: "12 Mar"
+    },
+    {
+      examName: "English Test",
+      score: "8/10",
+      percentage: "80%",
+      date: "10 Mar"
     }
   ];
 
