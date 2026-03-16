@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import StudentDashboard from "./pages/student/StudentDashboard";
 import TeacherDashboard from "./pages/teacher/TeacherDashboard";
+import ExamTimer from "./pages/ExamTimer";
 
 import Dashboard from "./pages/Dashboard";
 import LoginForm from "./pages/LoginForm";
@@ -25,6 +26,7 @@ function App() {
           <Route path="/admindashboard" element={<AdminDashboard />} />
           <Route path="/studentdashboard" element={<StudentDashboard />} />
           <Route path="/teacherdashboard" element={<TeacherDashboard />} />
+          <Route path="/timer" element={<ExamTimer />} />
 
           <Route path="/login" element={<LoginForm />} />
           <Route path="/exams" element={<ExamList />} />

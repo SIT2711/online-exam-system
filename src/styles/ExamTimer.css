@@ -1,0 +1,26 @@
+.timer-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #f8f9fa;
+}
+
+.timer-card {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  width: 250px;
+}
+
+.timer-title {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.timer-time {
+  font-size: 40px;
+  font-weight: bold;
+}
