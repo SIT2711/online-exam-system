@@ -23,6 +23,10 @@ function ExamPage() {
     {
       question: "Which gas do plants absorb from the atmosphere?",
       options: ["Carbon Dioxide", "Oxygen", "Nitrogen", "Hydrogen"]
+    },
+    {
+      question: "What is the SI unit of Force?",
+      options: ["Joule", "Newton", "Watt", "Pascal"]
     }
   ];
 
