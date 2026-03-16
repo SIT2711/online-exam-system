@@ -4,30 +4,23 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import StudentDashboard from "./pages/student/StudentDashboard";
 import TeacherDashboard from "./pages/teacher/TeacherDashboard";
-import ExamTimer from "./pages/ExamTimer";
 
 import Dashboard from "./pages/Dashboard";
 import LoginForm from "./pages/LoginForm";
 import Exam from "./pages/Exam";
 import AddQuestion from "./pages/AddQuestion";
 import ExamList from "./pages/ExamList";
-
-
-import "./styles/LoginForm.css";
-import "./styles/ExamList.css";
-import "./styles/Dashboard.css";
-
 import ExamPage from "./pages/ExamPage";
 import Register from "./pages/Register";
 import ResultHistory from "./pages/ResultHistory";
 import ExamTimer from "./pages/ExamTimer";
 
-import './styles/LoginForm.css';
-import './styles/ExamList.css';
-import './styles/Dashboard.css';
-import './styles/ExamPage.css';
-import './styles/Register.css';
-import './styles/ResultHistory.css';
+import "./styles/LoginForm.css";
+import "./styles/ExamList.css";
+import "./styles/Dashboard.css";
+import "./styles/ExamPage.css";
+import "./styles/Register.css";
+import "./styles/ResultHistory.css";
 
 function App() {
   return (
@@ -39,7 +32,6 @@ function App() {
           <Route path="/admindashboard" element={<AdminDashboard />} />
           <Route path="/studentdashboard" element={<StudentDashboard />} />
           <Route path="/teacherdashboard" element={<TeacherDashboard />} />
-          <Route path="/timer" element={<ExamTimer />} />
 
           <Route path="/login" element={<LoginForm />} />
           <Route path="/exams" element={<ExamList />} />
