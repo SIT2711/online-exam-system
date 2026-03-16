@@ -9,6 +9,7 @@ import ExamList from "./pages/ExamList";
 import ExamPage from "./pages/ExamPage";
 import Register from "./pages/Register";
 import ResultHistory from "./pages/ResultHistory";
+import Result from "./pages/Result";
 
 import './styles/LoginForm.css';
 import './styles/ExamList.css';
@@ -16,6 +17,7 @@ import './styles/Dashboard.css';
 import './styles/ExamPage.css';
 import './styles/Register.css';
 import './styles/ResultHistory.css';
+import './styles/Result.css';
 
 function App() {
   return (
@@ -31,6 +33,7 @@ function App() {
            <Route path="/attemptexam" element={<ExamPage />} />
             <Route path="/register" element={<Register />} />
             <Route path="/resulthistory" element={<ResultHistory />} />
+            <Route path="/result" element={<Result />} />
 
 
           <Route path="/" element={<h1>Welcome to Online Exam System</h1>} />
