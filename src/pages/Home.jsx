@@ -1,38 +1,42 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-function Home() {
+const Home = () => {
+  const [name, setName] = useState("");
+  const navigate = useNavigate();
+
+  const handleStart = () => {
+    if (!name.trim()) {
+      alert("Enter your name");
+      return;
+    }
+
+    localStorage.setItem("username", name);
+    navigate("/exam", { state: { name } });
+  };
+
   return (
-    <div style={{ textAlign: "center", marginTop: "100px" }}>
-      <h1>Online Exam System</h1>
-      <p>Select a page</p>
+    <div className="card">
+      <h2>Welcome to Exam System</h2>
 
-      <div style={{ marginTop: "30px" }}>
-        <Link to="/login">
-          <button style={btn}>Login</button>
-        </Link>
+      <input
+        type="text"
+        placeholder="Enter your name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
 
-        <Link to="/exams">
-          <button style={btn}>Exam List</button>
-        </Link>
+      <button className="btn" onClick={handleStart}>
+        Start Exam
+      </button>
 
-        <Link to="/exam">
-          <button style={btn}>Start Exam</button>
-        </Link>
+      <br /><br />
 
-        <Link to="/addquestion">
-          <button style={btn}>Add Question</button>
-        </Link>
-      </div>
+      <button className="btn" onClick={() => navigate("/history")}>
+        View History
+      </button>
     </div>
   );
-}
-
-const btn = {
-  margin: "10px",
-  padding: "10px 20px",
-  fontSize: "16px",
-  cursor: "pointer"
 };
 
 export default Home;

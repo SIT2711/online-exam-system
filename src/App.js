@@ -1,37 +1,24 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LoginForm from "./pages/LoginForm";
-import Exam from "./pages/Exam";
-import AddQuestion from "./pages/AddQuestion";
-import ExamList from "./pages/ExamList";
-import './styles/LoginForm.css';
-import './styles/ExamList.css';
-import Home from './pages/Home';
-
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Home from "./pages/Home";
+import ExamTimer from "./pages/ExamTimer";
+import SubmitExam from "./pages/SubmitExam";
+import Result from "./pages/Result";
+import ResultHistory from "./pages/ResultHistory";
+import "./styles/theme.css";
 
 function App() {
   return (
     <Router>
-      <div style={{ background: "#F8F9FA", minHeight: "100vh", padding: "20px" }}>
-        <Routes>
-          {/* Render the actual LoginForm component here */}
-          <Route path="/" element={<Home />} />
-
-          <Route path="/login" element={<LoginForm />} /> 
-          <Route path="/exams" element={<ExamList/>}/>  
-          <Route path="/exam" element={<Exam />} />  
-          <Route path="/addquestion" element={<AddQuestion />} />  
-          
-
-          
-          {/* Optional: Add a default route */}
-          <Route path="/" element={<h1>Welcome to Online Exam System</h1>} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/" element={<Navigate to="/home" />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/exam" element={<ExamTimer />} />
+        <Route path="/submit" element={<SubmitExam />} />
+        <Route path="/result" element={<Result />} />
+        <Route path="/history" element={<ResultHistory />} />
+      </Routes>
     </Router>
-
-  ); 
-
+  );
 }
 
 export default App;

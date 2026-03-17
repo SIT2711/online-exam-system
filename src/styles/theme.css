@@ -1,0 +1,26 @@
+body {
+  background-color: #F8F9FA;
+  font-family: Arial, sans-serif;
+  color: #333333;
+}
+
+.card {
+  background: #FFFFFF;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.btn {
+  background-color: #00BFB2;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn.cancel {
+  background-color: #ccc;
+  color: #333;
+}
