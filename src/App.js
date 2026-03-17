@@ -1,6 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
+import Layout from "./components/Layout";
+
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import StudentDashboard from "./pages/student/StudentDashboard";
 import TeacherDashboard from "./pages/teacher/TeacherDashboard";
@@ -25,24 +27,23 @@ import "./styles/ResultHistory.css";
 function App() {
   return (
     <Router>
-      <div style={{ background: "rgb(248,249,250)", minHeight: "100vh", padding: "20px" }}>
+      <div style={{ background: "#F9FAFB", minHeight: "100vh" }}>
         <Routes>
 
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/admindashboard" element={<AdminDashboard />} />
-          <Route path="/studentdashboard" element={<StudentDashboard />} />
-          <Route path="/teacherdashboard" element={<TeacherDashboard />} />
+          <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
+          <Route path="/admindashboard" element={<Layout><AdminDashboard /></Layout>} />
+          <Route path="/studentdashboard" element={<Layout><StudentDashboard /></Layout>} />
+          <Route path="/teacherdashboard" element={<Layout><TeacherDashboard /></Layout>} />
+
+          <Route path="/exams" element={<Layout><ExamList /></Layout>} />
+          <Route path="/exam" element={<Layout><Exam /></Layout>} />
+          <Route path="/addquestion" element={<Layout><AddQuestion /></Layout>} />
+          <Route path="/attemptexam" element={<Layout><ExamPage /></Layout>} />
+          <Route path="/resulthistory" element={<Layout><ResultHistory /></Layout>} />
+          <Route path="/timer" element={<Layout><ExamTimer /></Layout>} />
 
           <Route path="/login" element={<LoginForm />} />
-          <Route path="/exams" element={<ExamList />} />
-          <Route path="/exam" element={<Exam />} />
-          <Route path="/addquestion" element={<AddQuestion />} />
-
-          <Route path="/attemptexam" element={<ExamPage />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/resulthistory" element={<ResultHistory />} />
-          <Route path="/timer" element={<ExamTimer />} />
-
           <Route path="/" element={<LoginForm />} />
 
         </Routes>
