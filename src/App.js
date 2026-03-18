@@ -43,7 +43,7 @@ function App() {
           <Route path="/resulthistory" element={<ResultHistory />} />
           <Route path="/timer" element={<ExamTimer />} />
 
-          <Route path="/" element={<LoginForm />} />
+          <Route path="/" element={<h1>Welcome to Online Exam System</h1>} />
 
         </Routes>
       </div>
