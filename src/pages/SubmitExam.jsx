@@ -1,5 +1,6 @@
+// SubmitExam.jsx
 import React from 'react';
-import './SubmitExam.css';
+import "../styles/SubmitExam.css"; // Correct path if CSS is in src/styles/
 
 const SubmitExam = ({ unansweredQuestions, onCancel, onSubmit }) => {
   return (

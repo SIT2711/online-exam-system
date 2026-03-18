@@ -47,7 +47,7 @@ function App() {
           <Route path="/submitexam" element={<SubmitExam />} /> 
 
 
-          <Route path="/" element={<LoginForm />} />
+          <Route path="/" element={<h1>Welcome to Online Exam System</h1>} />
 
         </Routes>
       </div>
