@@ -44,8 +44,6 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/resulthistory" element={<ResultHistory />} />
           <Route path="/timer" element={<ExamTimer />} />
-          <Route path="/submitexam" element={<SubmitExam />} /> 
-
 
           <Route path="/" element={<h1>Welcome to Online Exam System</h1>} />
 
