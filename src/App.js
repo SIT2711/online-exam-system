@@ -14,7 +14,7 @@ import ExamPage from "./pages/ExamPage";
 import Register from "./pages/Register";
 import ResultHistory from "./pages/ResultHistory";
 import ExamTimer from "./pages/ExamTimer";
-import SubmitExam from "./pages/SubmitExam";
+
 
 import "./styles/LoginForm.css";
 import "./styles/ExamList.css";
@@ -22,7 +22,7 @@ import "./styles/Dashboard.css";
 import "./styles/ExamPage.css";
 import "./styles/Register.css";
 import "./styles/ResultHistory.css";
-import "./styles/SubmitExam.css";
+
 
 function App() {
   return (
