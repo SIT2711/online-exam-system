@@ -14,6 +14,7 @@ import ExamPage from "./pages/ExamPage";
 import Register from "./pages/Register";
 import ResultHistory from "./pages/ResultHistory";
 import ExamTimer from "./pages/ExamTimer";
+import SubmitExam from "./pages/SubmitExam";
 
 import "./styles/LoginForm.css";
 import "./styles/ExamList.css";
@@ -21,6 +22,7 @@ import "./styles/Dashboard.css";
 import "./styles/ExamPage.css";
 import "./styles/Register.css";
 import "./styles/ResultHistory.css";
+import "./styles/SubmitExam.css";
 
 function App() {
   return (
@@ -42,6 +44,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/resulthistory" element={<ResultHistory />} />
           <Route path="/timer" element={<ExamTimer />} />
+          <Route path="/submitexam" element={<SubmitExam />} /> 
 
           <Route path="/" element={<h1>Welcome to Online Exam System</h1>} />
 
