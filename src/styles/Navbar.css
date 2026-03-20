@@ -70,3 +70,12 @@
 .logout-btn:hover {
   background-color: #DC2626;
 }
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo-img {
+  height: 50px;   /* adjust if needed */
+  object-fit: contain;
+}

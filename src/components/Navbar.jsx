@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import "../styles/Navbar.css";
+import logo from "../assets/logo.jpeg";
 
 function Navbar() {
   const navigate = useNavigate();
@@ -15,7 +16,9 @@ function Navbar() {
 
   return (
     <nav className="navbar">
-      <h2 className="logo">Exam System</h2>
+      <h2 className="logo">
+        <img src={logo} alt="SIT Logo" className="logo-img" />
+      </h2>
 
       <ul className="nav-links">
 
