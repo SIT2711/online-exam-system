@@ -1,11 +1,9 @@
 import React from "react";
 import "../../styles/Dashboard.css";
-import Navbar from "../../components/Navbar";
 
 function StudentDashboard() {
   return (
-    <>
-      <Navbar />
+  
       <div className="dashboard-container">
         <h1 className="dashboard-title">Student Dashboard</h1>
 
@@ -26,7 +24,6 @@ function StudentDashboard() {
           </div>
         </div>
       </div>
-    </>
   );
 }
 

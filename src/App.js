@@ -1,6 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
+import Layout from "./components/Layout";
+
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import StudentDashboard from "./pages/student/StudentDashboard";
 import TeacherDashboard from "./pages/teacher/TeacherDashboard";
@@ -23,46 +25,37 @@ import "./styles/Dashboard.css";
 import "./styles/ExamPage.css";
 import "./styles/Register.css";
 import "./styles/ResultHistory.css";
-
 import "./styles/Result.css";
-
 import "./styles/SubmitExam.css";
-
 
 function App() {
   return (
     <Router>
-      <div
-        style={{
-          background: "rgb(248,249,250)",
-          minHeight: "100vh",
-          padding: "20px",
-        }}
-      >
+      <div style={{ background: "#F9FAFB", minHeight: "100vh" }}>
         <Routes>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/admindashboard" element={<AdminDashboard />} />
-          <Route path="/studentdashboard" element={<StudentDashboard />} />
-          <Route path="/teacherdashboard" element={<TeacherDashboard />} />
 
-          <Route path="/login" element={<LoginForm />} />
-          <Route path="/exams" element={<ExamList />} />
-          <Route path="/exam" element={<Exam />} />
-          <Route path="/addquestion" element={<AddQuestion />} />
-
-          <Route path="/attemptexam" element={<ExamPage />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/resulthistory" element={<ResultHistory />} />
-          <Route path="/result" element={<Result />} />
-          <Route path="/timer" element={<ExamTimer />} />
-          <Route path="/submitexam" element={<SubmitExam />} /> 
-
-
+          {/* Public Routes */}
           <Route path="/" element={<LoginForm />} />
+          <Route path="/login" element={<LoginForm />} />
+          <Route path="/register" element={<Register />} />
 
+          {/* Dashboard Routes */}
+          <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
+          <Route path="/admindashboard" element={<Layout><AdminDashboard /></Layout>} />
+          <Route path="/studentdashboard" element={<Layout><StudentDashboard /></Layout>} />
+          <Route path="/teacherdashboard" element={<Layout><TeacherDashboard /></Layout>} />
 
-          <Route path="/" element={<h1>Welcome to Online Exam System</h1>} />
+          {/* Exam Routes */}
+          <Route path="/exams" element={<Layout><ExamList /></Layout>} />
+          <Route path="/exam" element={<Layout><Exam /></Layout>} />
+          <Route path="/addquestion" element={<Layout><AddQuestion /></Layout>} />
+          <Route path="/attemptexam" element={<Layout><ExamPage /></Layout>} />
+          <Route path="/timer" element={<Layout><ExamTimer /></Layout>} />
+          <Route path="/submitexam" element={<Layout><SubmitExam /></Layout>} />
 
+          {/* Result Routes */}
+          <Route path="/resulthistory" element={<Layout><ResultHistory /></Layout>} />
+          <Route path="/result" element={<Layout><Result /></Layout>} />
 
         </Routes>
       </div>

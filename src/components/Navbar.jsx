@@ -1,41 +1,89 @@
-import { Link } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import "../styles/Navbar.css";
+import logo from "../assets/logo.jpeg";
 
 function Navbar() {
-  return (
-    <nav style={styles.navbar}>
-      <h2 style={styles.logo}>Exam System</h2>
+  const navigate = useNavigate();
 
-      <ul style={styles.navLinks}>
-        <li><Link to="/dashboard">Dashboard</Link></li>
-        <li><Link to="/exams">Exams</Link></li>
-        <li><Link to="/results">Results</Link></li>
-        <li><Link to="/profile">Profile</Link></li>
-        <li><Link to="/">Logout</Link></li>
+  const user = {
+    name: "Admin",
+    role: "admin"
+  };
+
+  const handleLogout = () => {
+    navigate("/");
+  };
+
+  return (
+    <nav className="navbar">
+      <h2 className="logo">
+        <img src={logo} alt="SIT Logo" className="logo-img" />
+      </h2>
+
+      <ul className="nav-links">
+
+        <li>
+          <NavLink to="/dashboard">
+            {({ isActive }) => (
+              <span className={isActive ? "active" : "link"}>
+                Dashboard
+              </span>
+            )}
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink to="/exams">
+            {({ isActive }) => (
+              <span className={isActive ? "active" : "link"}>
+                Exams
+              </span>
+            )}
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink to="/results">
+            {({ isActive }) => (
+              <span className={isActive ? "active" : "link"}>
+                Results
+              </span>
+            )}
+          </NavLink>
+        </li>
+
+        {/* Admin Only */}
+        {user.role === "admin" && (
+          <li>
+            <NavLink to="/addquestion">
+              {({ isActive }) => (
+                <span className={isActive ? "active" : "link"}>
+                  Add Question
+                </span>
+              )}
+            </NavLink>
+          </li>
+        )}
+
+        <li>
+          <NavLink to="/profile">
+            {({ isActive }) => (
+              <span className={isActive ? "active" : "link"}>
+                Profile
+              </span>
+            )}
+          </NavLink>
+        </li>
+
+        <li>
+          <button onClick={handleLogout} className="logout-btn">
+            Logout
+          </button>
+        </li>
+
       </ul>
     </nav>
   );
 }
-
-const styles = {
-  navbar: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "15px 30px",
-    background: "#F8F9FA"
-  },
-
-  logo: {
-    margin: 0
-  },
-
-  navLinks: {
-    listStyle: "none",
-    display: "flex",
-    gap: "20px",
-    margin: 0,
-    padding: 0
-  }
-};
 
 export default Navbar;

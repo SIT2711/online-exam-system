@@ -1,29 +1,81 @@
+/* Navbar */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #00BFB2;
   padding: 15px 30px;
-  color: white;
+  background-color: #0F766E; /* NEW COLOR */
+  border-radius: 10px;
+  margin: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Logo */
 .logo {
-  font-size: 22px;
+  margin: 0;
   font-weight: bold;
+  color: #ECFEFF;
 }
 
+/* Nav Links */
 .nav-links {
   list-style: none;
   display: flex;
   gap: 25px;
+  margin: 0;
+  padding: 0;
+  align-items: center;
 }
 
-.nav-links li a {
+/* 🔥 Remove underline */
+.nav-links a {
   text-decoration: none;
-  color: white;
-  font-size: 16px;
 }
 
-.nav-links li a:hover {
-  text-decoration: underline;
+/* Default Link */
+.link {
+  color: #ECFEFF;
+  font-weight: 500;
+  padding: 5px;
+  transition: 0.2s;
+}
+
+/* Hover */
+.link:hover {
+  color: #14B8A6;
+}
+
+/* Active (NO underline now) */
+.active {
+  color: #14B8A6;
+  font-weight: 600;
+}
+
+/* User */
+.user {
+  color: #CCFBF1;
+  font-size: 14px;
+}
+
+/* Logout */
+.logout-btn {
+  padding: 6px 14px;
+  background-color: #EF4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background-color: #DC2626;
+}
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo-img {
+  height: 50px;   /* adjust if needed */
+  object-fit: contain;
 }

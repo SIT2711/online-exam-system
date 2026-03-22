@@ -1,11 +1,9 @@
 import React from "react";
 import "../../styles/Dashboard.css";
-import Navbar from "../../components/Navbar";
 
 function TeacherDashboard() {
   return (
-    <>
-      <Navbar />
+    
       <div className="dashboard-container">
         <h1 className="dashboard-title">Teacher Dashboard</h1>
         <p>Welcome! Manage your exams and questions here.</p>
@@ -22,7 +20,7 @@ function TeacherDashboard() {
           </div>
         </div>
       </div>
-    </>
+    
   );
 }
 
