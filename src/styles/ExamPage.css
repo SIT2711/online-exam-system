@@ -1,6 +1,6 @@
 /* Page background */
 .examPage-container {
-  background: linear-gradient(135deg, #e0f7fa, #f8f9fa);
+  background: #ffffff;
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -98,7 +98,7 @@
 
 /* Button hover */
 .examPage-buttons button:hover {
-  background: #009e94;
+  background: #cccccc;
 }
 
 /* Disabled button */
