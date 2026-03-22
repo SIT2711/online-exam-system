@@ -20,6 +20,7 @@ import ExamTimer from "./pages/ExamTimer";
 import SubmitExam from "./pages/SubmitExam";
 import EditProfile from "./pages/Editprofile";
 
+
 import "./styles/LoginForm.css";
 import "./styles/ExamList.css";
 import "./styles/Dashboard.css";
@@ -59,7 +60,9 @@ function App() {
           {/* Result Routes */}
           <Route path="/resulthistory" element={<Layout><ResultHistory /></Layout>} />
           <Route path="/result" element={<Layout><Result /></Layout>} />
+          
           <Route path="/editprofile" element={<Layout><EditProfile /></Layout>} />
+
 
         </Routes>
       </div>
