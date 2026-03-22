@@ -43,10 +43,10 @@ function Navbar() {
         </li>
 
         <li>
-          <NavLink to="/resulthistory">
+          <NavLink to="/results">
             {({ isActive }) => (
               <span className={isActive ? "active" : "link"}>
-                Result
+                Results
               </span>
             )}
           </NavLink>
