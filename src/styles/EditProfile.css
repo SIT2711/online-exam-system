@@ -1,0 +1,82 @@
+/* styles/editprofile.css */
+
+/* Overall container styling */
+.edit-profile-container {
+  background-color: #F8F9FA; /* Background color */
+  width: 50%;
+  margin: 0 auto;
+  padding: 30px;
+  border-radius: 12px;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Card styling */
+.card {
+  background-color: #FFFFFF; /* Card color */
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease; /* Hover effect for card */
+  width:500px;
+}
+
+.card:hover {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+}
+
+/* Heading styles */
+h2 {
+  color: #333333; /* Text color */
+  margin-bottom: 15px;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 1.6rem;
+}
+
+/* Input styling */
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 1.1rem;
+  color: #333333; /* Text color */
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.input-group input {
+  width: 480px;
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #F1F1F1;
+  color: #333333; /* Text color */
+}
+
+.input-group input:focus {
+  border-color: #00BFB2; /* Highlight border color */
+  outline: none;
+}
+
+/* Button styling */
+button {
+  background-color: #00BFB2; /* Button color */
+  color: white;
+  padding: 15px;
+  border: none;
+  cursor: pointer;
+  border-radius: 25px;
+  width: 100%;
+  margin-top: 20px;
+  font-size: 1.1rem;
+  transition: all 0.3s ease; /* Button hover effect */
+}
+
+button:hover {
+  background-color: #009F9F;
+  transform: scale(1.05); /* Slight scale-up effect */
+}
