@@ -1,4 +1,5 @@
-import React from 'react';      
+import React from 'react';
+import { useNavigate } from "react-router-dom";
 import '../styles/ExamList.css'; // Importing the CSS for the ExamList
 
 const exams = [
@@ -21,6 +22,8 @@ const exams = [
 ];
 
 const ExamList = () => {
+  const navigate = useNavigate();
+  const userRole = "student";
   const handleStartExam = (examName) => {
     alert(`Starting exam: ${examName}`);
   };
@@ -34,12 +37,14 @@ const ExamList = () => {
             <h2 className="exam-name">{exam.examName}</h2>
             <p className="subject">{exam.subject}</p>
             <p className="duration">{exam.duration}</p>
-            <button
-              className="start-exam-btn"
-              onClick={() => handleStartExam(exam.examName)}
-            >
-              Start Exam
-            </button>
+            {userRole === "student" && (
+              <button
+                className="start-exam-btn"
+                onClick={() => navigate("/attemptexam")}
+              >
+                Attempt Exam
+              </button>
+            )}
           </div>
         ))}
       </div>

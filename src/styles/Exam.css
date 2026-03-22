@@ -1,23 +1,29 @@
+/* exam.css */
+
 .exam-container {
   background: #F8F9FA;
   min-height: 100vh;
+  width: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start; /* aligns card at top, same as AddQuestion */
+  padding: 40px 20px;
+  box-sizing: border-box;
 }
 
 .exam-card {
-  background: white;
+  background: #FFFFFF;
+  width: 100%;
+  max-width: 420px; /* matches AddQuestion card width */
   padding: 30px;
-  width: 400px;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .exam-card h2 {
   text-align: center;
   margin-bottom: 20px;
-  color: #333;
+  color: #333333;
 }
 
 .exam-card form {
@@ -28,14 +34,17 @@
 .exam-card label {
   margin-top: 10px;
   font-weight: 500;
+  color: #333333;
 }
 
 .exam-card input {
-  padding: 8px;
   margin-top: 5px;
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
   outline: none;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .exam-card input:focus {
@@ -44,14 +53,15 @@
 
 .exam-card button {
   margin-top: 20px;
-  padding: 10px;
+  padding: 12px;
   border: none;
   background: #00BFB2;
   color: white;
   font-size: 16px;
   border-radius: 6px;
   cursor: pointer;
-  transition: 0.3s;
+  transition: background-color 0.3s ease;
+  width: 100%;
 }
 
 .exam-card button:hover {
