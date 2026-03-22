@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/ExamPage.css";
 
 function ExamPage() {
@@ -30,8 +30,23 @@ function ExamPage() {
     }
   ];
 
+  const [timeLeft, setTimeLeft] = useState(300); // 5 minutes
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedOption, setSelectedOption] = useState("");
+
+  // Timer Logic
+  useEffect(() => {
+    if (timeLeft === 0) {
+      handleSubmit();
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft]);
 
   const nextQuestion = () => {
     if (currentQuestion < questions.length - 1) {
@@ -48,7 +63,7 @@ function ExamPage() {
   };
 
   const handleSubmit = () => {
-    alert("Exam Submitted Successfully!");
+    alert("Time's up! Exam submitted automatically.");
   };
 
   return (
@@ -103,6 +118,19 @@ function ExamPage() {
             </button>
           )}
 
+        </div>
+
+        {/* TIMER DISPLAY */}
+        <div
+          style={{
+            marginTop: "10px",
+            fontWeight: "bold",
+            color: timeLeft < 60 ? "red" : "black"
+          }}
+        >
+          Time Left: {Math.floor(timeLeft / 60)}:
+          {timeLeft % 60 < 10 ? "0" : ""}
+          {timeLeft % 60}
         </div>
 
       </div>
