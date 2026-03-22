@@ -18,6 +18,9 @@ import ResultHistory from "./pages/ResultHistory";
 import Result from "./pages/Result";
 import ExamTimer from "./pages/ExamTimer";
 import SubmitExam from "./pages/SubmitExam";
+import Profile from "./pages/Profile";
+
+
 
 import "./styles/LoginForm.css";
 import "./styles/ExamList.css";
@@ -27,6 +30,8 @@ import "./styles/Register.css";
 import "./styles/ResultHistory.css";
 import "./styles/Result.css";
 import "./styles/SubmitExam.css";
+import "./styles/Profile.css";
+
 
 function App() {
   return (
@@ -52,10 +57,12 @@ function App() {
           <Route path="/attemptexam" element={<Layout><ExamPage /></Layout>} />
           <Route path="/timer" element={<Layout><ExamTimer /></Layout>} />
           <Route path="/submitexam" element={<Layout><SubmitExam /></Layout>} />
+         
 
           {/* Result Routes */}
           <Route path="/resulthistory" element={<Layout><ResultHistory /></Layout>} />
           <Route path="/result" element={<Layout><Result /></Layout>} />
+          <Route path="/profile" element={<Layout><Profile /></Layout>} />
 
         </Routes>
       </div>
