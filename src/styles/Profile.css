@@ -1,0 +1,96 @@
+/* styles/profile.css */
+
+/* Container for the entire profile */
+.profile-container {
+   /* Gradient background */
+  color: #fff;
+  width: 46%;
+  margin: 0 auto;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  font-family: 'Arial', sans-serif;
+}
+
+/* Profile card styling */
+.card {
+  background-color: #FFFFFF;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  width: 925px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease; /* Add transition for hover effect */
+}
+
+/* Hover effect on cards */
+.card:hover {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+}
+
+/* Header styles */
+h2, h3 {
+  color: #333333; 
+  margin-bottom: 15px;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 1.4rem;
+}
+
+/* Profile info text styling */
+.profile-info p {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  color: #333333; /* Text color */
+  line-height: 1.6;
+}
+
+/* Button styling */
+button {
+  background-color: #00BFB2; /* Button color */
+  color: white;
+  padding: 15px;
+  border: none;
+  cursor: pointer;
+  border-radius: 25px;
+  width: 100%;
+  margin-top: 20px;
+  font-size: 1.1rem;
+  box-sizing: border-box;
+  transition: all 0.3s ease; /* Add transition for hover effect */
+}
+
+/* Hover effect on button */
+button:hover {
+  background-color: #009F9F;
+  transform: scale(1.05); /* Slight scale-up effect */
+}
+
+
+
+/* Statistics section */
+.statistics {
+  margin-top: 30px;
+}
+
+.stat-card {
+  background-color: #FFFFFF; /* Card color */
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease; /* Add transition for hover effect */
+}
+
+.stat-card:hover {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+}
+
+.stat-card p {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #333333;
+  font-weight: bold;
+}
