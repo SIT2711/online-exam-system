@@ -2,7 +2,7 @@
 
 /* Container for the entire profile */
 .profile-container {
-  background: linear-gradient(to right, #00BFB2, #1e3c72); /* Gradient background */
+  /* Gradient background */
   color: #fff;
   width: 46%;
   margin: 0 auto;
@@ -14,6 +14,7 @@
 
 /* Profile card styling */
 .card {
+  
   background-color: #FFFFFF;
   padding: 20px;
   margin-bottom: 20px;
