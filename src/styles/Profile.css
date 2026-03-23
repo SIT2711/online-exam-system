@@ -14,7 +14,6 @@
 
 /* Profile card styling */
 .card {
-  
   background-color: #FFFFFF;
   padding: 20px;
   margin-bottom: 20px;
@@ -47,19 +46,25 @@ h2, h3 {
   line-height: 1.6;
 }
 
-/* Button styling */
+/* Container for buttons - align them in one line */
+.profile-buttons {
+  display: flex;
+  justify-content: space-between; /* Space out the buttons */
+  gap: 10px; /* Add small gap between buttons */
+  margin-top: 20px;
+}
+
+/* Button styling (smaller buttons) */
 button {
   background-color: #00BFB2; /* Button color */
   color: white;
-  padding: 15px;
+  padding: 10px 20px; /* Reduced padding for smaller button */
   border: none;
   cursor: pointer;
   border-radius: 25px;
-  width: 100%;
-  margin-top: 20px;
-  font-size: 1.1rem;
-  box-sizing: border-box;
-  transition: all 0.3s ease; /* Add transition for hover effect */
+  font-size: 0.9rem; /* Smaller font size */
+  width: 48%; /* Make the buttons smaller */
+  transition: all 0.3s ease; /* Button hover effect */
 }
 
 /* Hover effect on button */
@@ -68,7 +73,14 @@ button:hover {
   transform: scale(1.05); /* Slight scale-up effect */
 }
 
+/* Go Back button style (optional differentiation) */
+button.go-back-btn {
+  background-color: #00BFB2; /* Red color for go back button */
+}
 
+button.go-back-btn:hover {
+  background-color: #00BFB2; /* Darker red on hover */
+}
 
 /* Statistics section */
 .statistics {
@@ -94,4 +106,8 @@ button:hover {
   font-size: 1.1rem;
   color: #333333;
   font-weight: bold;
+}
+
+.view-statistics-btn{
+  width: 100%;
 }
