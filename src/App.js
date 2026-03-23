@@ -44,7 +44,7 @@ function App() {
         <Routes>
 
           {/* Public Routes */}
-          <Route path="/" element={<Navbar><LoginForm /></Navbar>} />
+          <Route path="/" element={<LoginForm />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<Register />} />
 
