@@ -27,7 +27,7 @@ function Register() {
     return;
   }
 
-  fetch("http://localhost:8080/online-exam-api/auth/register.php", {
+  fetch("http://localhost/online-exam-api/auth/register.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded"
