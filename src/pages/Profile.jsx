@@ -1,12 +1,25 @@
 // pages/profile.jsx
 import React, { useState } from 'react';
-import '../styles/Profile.css'; // Ensure the correct CSS file is imported
+import { useNavigate } from 'react-router-dom'; // Import useNavigate hook for navigation
+import '../styles/Profile.css';
 
 const Profile = () => {
   const [showStatistics, setShowStatistics] = useState(false);
+  const navigate = useNavigate(); // Hook to navigate between pages
 
+  // Toggle statistics visibility
   const toggleStatistics = () => {
     setShowStatistics(!showStatistics);
+  };
+
+  // Navigate to EditProfile page when "Update Profile" button is clicked
+  const handleUpdateProfile = () => {
+    navigate('/Editprofile');
+  };
+
+  // Navigate to Dashboard page when "Go Back" button is clicked
+  const handleGoBack = () => {
+    navigate('/dashboard');
   };
 
   return (
@@ -24,10 +37,7 @@ const Profile = () => {
       </div>
 
       {/* Button to toggle statistics */}
-      <button
-        className="view-statistics-btn"
-        onClick={toggleStatistics}
-      >
+      <button className="view-statistics-btn" onClick={toggleStatistics}>
         {showStatistics ? 'Hide Statistics' : 'View Statistics'}
       </button>
 
@@ -46,6 +56,12 @@ const Profile = () => {
           </div>
         </div>
       )}
+
+      {/* Buttons for Update Profile and Go Back */}
+      <div className="profile-buttons">
+        <button onClick={handleUpdateProfile}>Update Profile</button>
+        <button className="go-back-btn" onClick={handleGoBack}>Go Back</button>
+      </div>
     </div>
   );
 };
