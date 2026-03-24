@@ -20,15 +20,32 @@ function Register() {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match");
-      return;
-    }
+  if (formData.password !== formData.confirmPassword) {
+    alert("Passwords do not match");
+    return;
+  }
 
-    alert("Registration Successful!");
-  };
+  fetch("http://localhost:8080/online-exam-api/auth/register.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: new URLSearchParams({
+      fullName: formData.fullName,
+      email: formData.email,
+      password: formData.password,
+      role: formData.role,
+      phone: formData.phone
+    })
+  })
+    .then(res => res.text())
+    .then(data => {
+      alert(data);
+    })
+    .catch(err => console.log(err));
+};
 
   return (
     <div className="register-container">
