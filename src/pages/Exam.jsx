@@ -24,7 +24,7 @@ function Exam() {
   };
 
   return (
-    <div className="exam-container">
+    <div className="exam-page-container">
       <div className="exam-card">
         <h2>Create Exam</h2>
 
