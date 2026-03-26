@@ -20,7 +20,7 @@ function LoginForm() {
 
     try {
       const res = await fetch(
-        "http://localhost/online-exam-system/auth/login.php",
+        "http://localhost/online-exam-backend/auth/login.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
