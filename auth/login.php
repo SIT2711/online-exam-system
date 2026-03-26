@@ -10,8 +10,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
-q
+
 // Connect to database
+header("Content-Type: application/json");  // ✅ semicolon added
 $conn = new mysqli("localhost", "root", "", "online_exam_system");
 if ($conn->connect_error) {
     echo json_encode(["status" => "error", "message" => "DB connection failed"]);
