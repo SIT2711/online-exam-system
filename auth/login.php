@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
-
+q
 // Connect to database
 $conn = new mysqli("localhost", "root", "", "online_exam_system");
 if ($conn->connect_error) {
