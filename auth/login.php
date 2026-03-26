@@ -1,39 +1,30 @@
 <?php
-// Enable CORS
+
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
-header("Content-Type: application/json");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
 
-// Handle preflight request
+
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
+    exit(0); // handle preflight
 }
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-// Connect to database
-header("Content-Type: application/json");  // ✅ semicolon added
-$conn = new mysqli("localhost", "root", "", "online_exam_system");
-if ($conn->connect_error) {
-    echo json_encode(["status" => "error", "message" => "DB connection failed"]);
-    exit();
-}
+include("../config/db.php");
 
-// Read JSON input
-$input = json_decode(file_get_contents('php://input'), true);
-
-$email = $input['email'] ?? '';
-$password = $input['password'] ?? '';
-$role = $input['role'] ?? '';
+// Get POST data
+$email = $_POST['email'] ?? '';
+$password = $_POST['password'] ?? '';
+$role = $_POST['role'] ?? '';
 
 if (empty($email) || empty($password) || empty($role)) {
-    echo json_encode(["status" => "error", "message" => "All fields required"]);
+    echo "All fields are required.";
     exit();
 }
 
-// Prepare and execute query
-$sql = "SELECT * FROM users WHERE email=? AND role=?";
-$stmt = $conn->prepare($sql);
+// Prepare SQL statement
+$stmt = $conn->prepare("SELECT * FROM users WHERE email=? AND role=?");
 $stmt->bind_param("ss", $email, $role);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -41,28 +32,16 @@ $result = $stmt->get_result();
 if ($result && $result->num_rows > 0) {
     $user = $result->fetch_assoc();
 
-    // For plain-text password check (since your DB stores plain text)
-    if ($password === $user['password']) {
-
-        echo json_encode([
-            "status" => "success",
-            "user" => [
-                "id" => $user['user_id'],
-                "name" => $user['full_name'],
-                "role" => $user['role']
-            ]
-        ]);
+    if ($password === $user['password']) { // plain-text check
+        echo "Login successful! Welcome " . $user['full_name'];
+        // Here you can start a session if needed:
+        // session_start();
+        // $_SESSION['user_id'] = $user['user_id'];
     } else {
-        echo json_encode([
-            "status" => "error",
-            "message" => "Invalid email, password, or role"
-        ]);
+        echo "Invalid email, password, or role.";
     }
 } else {
-    echo json_encode([
-        "status" => "error",
-        "message" => "Invalid email, password, or role"
-    ]);
+    echo "Invalid email, password, or role.";
 }
 
 $stmt->close();
