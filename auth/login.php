@@ -1,11 +1,10 @@
 <?php
 // Enable CORS
-header("Access-Control-Allow-Origin: *"); // allow all origins
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS"); // allowed methods
-header("Access-Control-Allow-Headers: Content-Type, Authorization"); // allow headers
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Content-Type: application/json");
 
-// Handle preflight request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
@@ -23,30 +22,46 @@ $input = json_decode(file_get_contents('php://input'), true);
 
 $email = $input['email'] ?? '';
 $password = $input['password'] ?? '';
+$role = $input['role'] ?? '';
 
-if (empty($email) || empty($password)) {
+if (empty($email) || empty($password) || empty($role)) {
     echo json_encode(["status" => "error", "message" => "All fields required"]);
     exit();
 }
 
-$sql = "SELECT * FROM users WHERE email='$email' AND password='$password'";
-$result = $conn->query($sql);
+// Prepare statement
+$sql = "SELECT * FROM users WHERE email=? AND role=?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("ss", $email, $role);
+$stmt->execute();
+$result = $stmt->get_result();
 
 if ($result && $result->num_rows > 0) {
     $user = $result->fetch_assoc();
 
-    echo json_encode([
-        "status" => "success",
-        "user" => [
-            "id" => $user['user_id'],
-            "name" => $user['full_name'],
-            "role" => $user['role']
-        ]
-    ]);
+    // Verify password
+    if ($password === $user['password']) {
+        echo json_encode([
+            "status" => "success",
+            "user" => [
+                "id" => $user['user_id'],
+                "name" => $user['full_name'],
+                "role" => $user['role']
+            ]
+        ]);
+    } else {
+        echo json_encode([
+            "status" => "error",
+            "message" => "Invalid email, password, or role"
+        ]);
+    }
 } else {
     echo json_encode([
         "status" => "error",
-        "message" => "Invalid email or password"
+        "message" => "Invalid email, password, or role"
     ]);
 }
+
+$stmt->close();
+$conn->close();
 ?>

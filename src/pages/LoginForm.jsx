@@ -7,12 +7,13 @@ function LoginForm() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState("");
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!email || !password) {
+    if (!email || !password || !role) {
       setErrorMessage("All fields are required");
       return;
     }
@@ -23,7 +24,7 @@ function LoginForm() {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
+          body: JSON.stringify({ email, password, role }),
         }
       );
 
@@ -77,6 +78,12 @@ function LoginForm() {
               required
             />
           </div>
+          <select value={role} onChange={(e) => setRole(e.target.value)} required>
+            <option value="">Select Role</option>
+            <option value="admin">admin</option>
+            <option value="teacher">teacher</option>
+            <option value="student">student</option>
+          </select>
 
           <button type="submit" className="btn">
             Login
