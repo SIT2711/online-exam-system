@@ -13,43 +13,26 @@ function LoginForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!email || !password || !role) {
-      setErrorMessage("All fields are required");
-      return;
-    }
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("role", role);
 
-    try {
-      const res = await fetch(
-        "http://localhost/online-exam-backend/auth/login.php",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password, role }),
-        }
-      );
+    const res = await fetch("http://localhost/online-exam-backend/auth/login.php", {
+      method: "POST",
+      body: formData,
+    });
 
-      const data = await res.json();
+    const text = await res.text();
 
-      if (data.status === "success") {
-        console.log("Login success:", data);
-
-        // store user
-        localStorage.setItem("user", JSON.stringify(data.user));
-
-        // redirect based on role
-        if (data.user.role === "admin") {
-          navigate("/admin/dashboard");
-        } else if (data.user.role === "teacher") {
-          navigate("/teacher/dashboard");
-        } else {
-          navigate("/student/dashboard");
-        }
-      } else {
-        setErrorMessage(data.message);
-      }
-    } catch (error) {
-      console.error(error);
-      setErrorMessage("Server error");
+    if (text.includes("Login successful")) {
+      setErrorMessage(""); // clear errors
+      // Redirect based on role
+      if (role === "admin") navigate("/admin-dashboard");
+      else if (role === "teacher") navigate("/teacher-dashboard");
+      else if (role === "student") navigate("/student-dashboard");
+    } else {
+      setErrorMessage(text); // show PHP error
     }
   };
 
