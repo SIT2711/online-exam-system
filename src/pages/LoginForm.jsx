@@ -10,52 +10,47 @@ function LoginForm() {
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!email || !password) {
-    setErrorMessage("All fields are required");
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append("email", email);
-  formData.append("password", password);
-
-  try {
-    const res = await fetch(
-      "http://localhost/online-exam-system/auth/login.php",
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
-
-    const data = await res.json();
-
-    if (data.status === "success") {
-      console.log("Login success:", data);
-
-      // store user (optional)
-      localStorage.setItem("user", JSON.stringify(data.user));
-
-      // redirect based on role
-      if (data.user.role === "admin") {
-        navigate("/admin/dashboard");
-      } else if (data.user.role === "teacher") {
-        navigate("/teacher/dashboard");
-      } else {
-        navigate("/student/dashboard");
-      }
-
-    } else {
-      setErrorMessage(data.message);
+    if (!email || !password) {
+      setErrorMessage("All fields are required");
+      return;
     }
 
-  } catch (error) {
-    console.error(error);
-    setErrorMessage("Server error");
-  }
-};
+    try {
+      const res = await fetch(
+        "http://localhost/online-exam-system/auth/login.php",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.status === "success") {
+        console.log("Login success:", data);
+
+        // store user
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        // redirect based on role
+        if (data.user.role === "admin") {
+          navigate("/admin/dashboard");
+        } else if (data.user.role === "teacher") {
+          navigate("/teacher/dashboard");
+        } else {
+          navigate("/student/dashboard");
+        }
+      } else {
+        setErrorMessage(data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Server error");
+    }
+  };
 
   return (
     <div className="login-container">
@@ -82,7 +77,7 @@ function LoginForm() {
               required
             />
           </div>
-          
+
           <button type="submit" className="btn">
             Login
           </button>

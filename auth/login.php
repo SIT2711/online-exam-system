@@ -1,6 +1,15 @@
 <?php
+// Enable CORS
+header("Access-Control-Allow-Origin: *"); // allow all origins
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS"); // allowed methods
+header("Access-Control-Allow-Headers: Content-Type, Authorization"); // allow headers
 header("Content-Type: application/json");
-header("Access-Control-Allow-Origin: *");
+
+// Handle preflight request
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 $conn = new mysqli("localhost", "root", "", "online_exam_system");
 
@@ -9,8 +18,11 @@ if ($conn->connect_error) {
     exit();
 }
 
-$email = $_POST['email'] ?? '';
-$password = $_POST['password'] ?? '';
+// Read JSON input
+$input = json_decode(file_get_contents('php://input'), true);
+
+$email = $input['email'] ?? '';
+$password = $input['password'] ?? '';
 
 if (empty($email) || empty($password)) {
     echo json_encode(["status" => "error", "message" => "All fields required"]);
