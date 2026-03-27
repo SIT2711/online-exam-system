@@ -50,9 +50,9 @@ function App() {
 
           {/* Dashboard Routes */}
           <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
-          <Route path="/admindashboard" element={<Layout><AdminDashboard /></Layout>} />
-          <Route path="/studentdashboard" element={<Layout><StudentDashboard /></Layout>} />
-          <Route path="/teacherdashboard" element={<Layout><TeacherDashboard /></Layout>} />
+          <Route path="/admin-dashboard" element={<Layout><AdminDashboard /></Layout>} />
+          <Route path="/student-dashboard" element={<Layout><StudentDashboard /></Layout>} />
+          <Route path="/teacher-dashboard" element={<Layout><TeacherDashboard /></Layout>} />
 
           {/* Exam Routes */}
           <Route path="/exams" element={<Layout><ExamList /></Layout>} />
