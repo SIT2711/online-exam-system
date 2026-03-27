@@ -18,7 +18,7 @@ function LoginForm() {
     formData.append("password", password);
     formData.append("role", role);
 
-    const res = await fetch("http://localhost/online-exam-backend/auth/login.php", {
+    const res = await fetch("http://localhost/online-exam-system/auth/login.php", {
       method: "POST",
       body: formData,
     });
