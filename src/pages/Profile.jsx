@@ -1,67 +1,84 @@
 // pages/profile.jsx
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate hook for navigation
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/Profile.css';
 
 const Profile = () => {
-  const [showStatistics, setShowStatistics] = useState(false);
-  const navigate = useNavigate(); // Hook to navigate between pages
 
-  // Toggle statistics visibility
-  const toggleStatistics = () => {
-    setShowStatistics(!showStatistics);
-  };
+  const [user, setUser] = useState({
+    full_name: '',
+    email: '',
+    phone: '',
+    role: '',
+    join_date: ''
+  });
 
-  // Navigate to EditProfile page when "Update Profile" button is clicked
+  const navigate = useNavigate();
+
+  // FETCH DATA
+  useEffect(() => {
+    fetch('http://localhost/online-exam-system/auth/profile.php')
+      .then(res => res.json())
+      .then(data => {
+        if (!data.error) {
+          setUser(data);
+        }
+      })
+      .catch(err => console.log(err));
+  }, []);
+
   const handleUpdateProfile = () => {
-    navigate('/Editprofile');
+    navigate('/editprofile');
   };
 
-  // Navigate to Dashboard page when "Go Back" button is clicked
   const handleGoBack = () => {
     navigate('/dashboard');
   };
 
   return (
     <div className="profile-container">
-      {/* Profile Info Card */}
-      <div className="card profile-info-card">
-        <h2>Profile Information</h2>
-        <div className="profile-info">
-          <p><strong>Full Name:</strong> Amar Patil</p>
-          <p><strong>Email:</strong> Amar@gmail.com</p>
-          <p><strong>Phone:</strong> 9876543210</p>
-          <p><strong>Role:</strong> Student</p>
-          <p><strong>Joined Date:</strong> 22 March 2026</p>
+
+      {/* TOP SECTION (2 CARDS) */}
+      <div className="top-section">
+
+        {/* PROFILE CARD */}
+        <div className="card">
+          <h2>PROFILE INFORMATION</h2>
+
+          <div className="profile-info">
+            <p><strong>Full Name:</strong> {user.full_name}</p>
+            <p><strong>Email:</strong> {user.email}</p>
+            <p><strong>Phone:</strong> {user.phone}</p>
+            <p><strong>Role:</strong> {user.role}</p>
+            <p><strong>Joined Date:</strong> {user.join_date}</p>
+          </div>
         </div>
+
+        {/* STATISTICS CARD */}
+        <div className="card">
+          <h3>STATISTICS</h3>
+
+          <div className="stat-card">
+            <p>Total Exams Attempted: 5</p>
+          </div>
+
+          <div className="stat-card">
+            <p>Completed Exams: 3</p>
+          </div>
+
+          <div className="stat-card">
+            <p>Last Score: 80%</p>
+          </div>
+        </div>
+
       </div>
 
-      {/* Button to toggle statistics */}
-      <button className="view-statistics-btn" onClick={toggleStatistics}>
-        {showStatistics ? 'Hide Statistics' : 'View Statistics'}
-      </button>
-
-      {/* Statistics Card */}
-      {showStatistics && (
-        <div className="card statistics-card">
-          <h3>Statistics</h3>
-          <div className="stat-card">
-            <p><strong>Total Exams Attempted:</strong> 5</p>
-          </div>
-          <div className="stat-card">
-            <p><strong>Completed Exams:</strong> 3</p>
-          </div>
-          <div className="stat-card">
-            <p><strong>Last Score:</strong> 80%</p>
-          </div>
-        </div>
-      )}
-
-      {/* Buttons for Update Profile and Go Back */}
+      {/* ACTION BUTTONS */}
       <div className="profile-buttons">
         <button onClick={handleUpdateProfile}>Update Profile</button>
-        <button className="go-back-btn" onClick={handleGoBack}>Go Back</button>
+        <button onClick={handleGoBack}>Go Back</button>
       </div>
+
     </div>
   );
 };

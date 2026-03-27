@@ -1,113 +1,76 @@
-/* styles/profile.css */
+body {
+  background-color: #f5f6f8;
+}
 
-/* Container for the entire profile */
+/* MAIN CONTAINER */
 .profile-container {
-  /* Gradient background */
-  color: #fff;
-  width: 46%;
-  margin: 0 auto;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  font-family: 'Arial', sans-serif;
+  width: 900px;
+  margin: 60px auto;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-/* Profile card styling */
+/* FLEX LAYOUT */
+.top-section {
+  display: flex;
+  gap: 40px;
+}
+
+/* CARD */
 .card {
-  background-color: #FFFFFF;
-  padding: 20px;
-  margin-bottom: 20px;
-  border-radius: 12px;
-  width: 925px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease; /* Add transition for hover effect */
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 25px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  width: 100%;
 }
 
-/* Hover effect on cards */
-.card:hover {
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
-  transform: translateY(-5px);
-}
-
-/* Header styles */
+/* HEADINGS */
 h2, h3 {
-  color: #333333; 
-  margin-bottom: 15px;
-  font-weight: bold;
-  text-transform: uppercase;
-  font-size: 1.4rem;
+  font-size: 18px;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 20px;
 }
 
-/* Profile info text styling */
+/* PROFILE TEXT */
 .profile-info p {
-  font-size: 1.1rem;
-  margin-bottom: 10px;
-  color: #333333; /* Text color */
-  line-height: 1.6;
+  margin: 10px 0;
+  font-size: 15px;
+  color: #333;
 }
 
-/* Container for buttons - align them in one line */
+.profile-info strong {
+  color: #000;
+}
+
+/* STAT CARDS */
+.stat-card {
+  background: #f8f9fb;
+  padding: 12px 15px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+}
+
+/* BUTTON GROUP */
 .profile-buttons {
   display: flex;
-  justify-content: space-between; /* Space out the buttons */
-  gap: 10px; /* Add small gap between buttons */
+  gap: 20px;
   margin-top: 20px;
 }
 
-/* Button styling (smaller buttons) */
+/* BUTTON STYLE */
 button {
-  background-color: #00BFB2; /* Button color */
-  color: white;
-  padding: 10px 20px; /* Reduced padding for smaller button */
+  flex: 1;
+  padding: 12px;
+  border-radius: 30px;
   border: none;
+  color: white;
+  font-size: 14px;
   cursor: pointer;
-  border-radius: 25px;
-  font-size: 0.9rem; /* Smaller font size */
-  width: 48%; /* Make the buttons smaller */
-  transition: all 0.3s ease; /* Button hover effect */
+  
 }
 
-/* Hover effect on button */
 button:hover {
-  background-color: #009F9F;
-  transform: scale(1.05); /* Slight scale-up effect */
-}
-
-/* Go Back button style (optional differentiation) */
-button.go-back-btn {
-  background-color: #00BFB2; /* Red color for go back button */
-}
-
-button.go-back-btn:hover {
-  background-color: #00BFB2; /* Darker red on hover */
-}
-
-/* Statistics section */
-.statistics {
-  margin-top: 30px;
-}
-
-.stat-card {
-  background-color: #FFFFFF; /* Card color */
-  padding: 15px;
-  margin: 10px 0;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease; /* Add transition for hover effect */
-}
-
-.stat-card:hover {
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
-  transform: translateY(-5px);
-}
-
-.stat-card p {
-  margin: 0;
-  font-size: 1.1rem;
-  color: #333333;
-  font-weight: bold;
-}
-
-.view-statistics-btn{
-  width: 100%;
+  transform: scale(1.05);
 }
