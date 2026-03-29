@@ -1,50 +1,55 @@
 <?php
+session_start();
 
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST, OPTIONS");
+
+header("Access-Control-Allow-Origin: http://localhost:3000");
+header("Access-Control-Allow-Credentials: true");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
+include "../config/db.php";
 
-
+// Handle CORS preflight
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    exit(0); // handle preflight
-}
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-include("../config/db.php");
-
-// Get POST data
-$email = $_POST['email'] ?? '';
-$password = $_POST['password'] ?? '';
-$role = $_POST['role'] ?? '';
-
-if (empty($email) || empty($password) || empty($role)) {
-    echo "All fields are required.";
+    http_response_code(200);
     exit();
 }
 
-// Prepare SQL statement
-$stmt = $conn->prepare("SELECT * FROM users WHERE email=? AND role=?");
-$stmt->bind_param("ss", $email, $role);
+$data = json_decode(file_get_contents("php://input"), true);
+
+$email = $data['email'];
+$password = $data['password'];
+
+$sql = "SELECT * FROM users WHERE email = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $email);
 $stmt->execute();
+
 $result = $stmt->get_result();
 
-if ($result && $result->num_rows > 0) {
+if ($result->num_rows > 0) {
     $user = $result->fetch_assoc();
 
-    if ($password === $user['password']) { // plain-text check
-        echo "Login successful! Welcome " . $user['full_name'];
-        // Here you can start a session if needed:
-        // session_start();
-        // $_SESSION['user_id'] = $user['user_id'];
+    // ⚠️ If you are NOT using hashed password (temporary)
+    if ($password === $user['password']) {
+
+        $_SESSION['user_id'] = $user['user_id'];
+        $_SESSION['role'] = $user['role'];
+
+        echo json_encode([
+            "status" => "success",
+            "user" => $user
+        ]);
     } else {
-        echo "Invalid email, password, or role.";
+        echo json_encode([
+            "status" => "error",
+            "message" => "Invalid password"
+        ]);
     }
+
 } else {
-    echo "Invalid email, password, or role.";
+    echo json_encode([
+        "status" => "error",
+        "message" => "User not found"
+    ]);
 }
-
-$stmt->close();
-$conn->close();
-
 ?>
