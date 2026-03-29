@@ -1,4 +1,3 @@
-// src/components/LoginForm.js
 import { useNavigate, Link } from "react-router-dom";
 import React, { useState } from "react";
 import "../styles/LoginForm.css";
@@ -8,13 +7,12 @@ function LoginForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState(""); // selected role
+  const [role, setRole] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    //  If role not selected
     if (!role) {
       setErrorMessage("Please select a role");
       return;
@@ -32,7 +30,7 @@ function LoginForm() {
           body: JSON.stringify({
             email,
             password,
-            role, // send role to backend
+            role, // ✅ send role
           }),
         }
       );
@@ -41,32 +39,24 @@ function LoginForm() {
       console.log("LOGIN RESPONSE:", data);
 
       if (data.status === "success") {
-        const userRole = data.user.role?.toLowerCase();
+        const userRole = data.user.role.toLowerCase().trim();
 
-        //  Role mismatch check
-        if (role !== userRole) {
-          setErrorMessage("❌ Selected role is incorrect!");
-          return;
-        }
+        // ✅ store user
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            id: data.user.user_id,
+            name: data.user.full_name,
+            role: userRole,
+          })
+        );
 
-        // / Save user (IMPORTANT: sessionStorage)
-        // sessionStorage.setItem(
-        //   "user",
-        //   JSON.stringify({
-        //     id: data.user.id,
-        //     name: data.user.name,
-        //     role: userRole,
-        //   })
-        // );
-
-        setErrorMessage("");
-
-        // Redirect based on role
+        // ✅ redirect
         if (userRole === "admin") navigate("/admin-dashboard");
         else if (userRole === "teacher") navigate("/teacher-dashboard");
         else if (userRole === "student") navigate("/student-dashboard");
       } else {
-        setErrorMessage(data.message || "Login failed");
+        setErrorMessage(data.message);
       }
     } catch (error) {
       console.error(error);
@@ -80,29 +70,28 @@ function LoginForm() {
         <h1>Exam System</h1>
 
         <form onSubmit={handleSubmit}>
-          {/* Email */}
           <div className="form-group">
             <label>Email</label>
             <input
               type="email"
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
 
-          {/* Password */}
           <div className="form-group">
             <label>Password</label>
             <input
               type="password"
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
 
-          {/* Role Dropdown */}
           <div className="form-group">
             <label>Select Role</label>
             <select
@@ -117,17 +106,14 @@ function LoginForm() {
             </select>
           </div>
 
-          {/* Button */}
           <button type="submit" className="btn">
             Login
           </button>
 
-          {/* Error */}
           {errorMessage && (
             <div className="error-message">{errorMessage}</div>
           )}
 
-          {/* Links */}
           <div className="extra-links">
             <Link to="/">Forgot Password</Link> |{" "}
             <Link to="/register">Create A New Account</Link>
