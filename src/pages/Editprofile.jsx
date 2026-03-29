@@ -1,28 +1,82 @@
 // pages/editProfile.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/EditProfile.css'; // Ensure correct CSS is imported
+import '../styles/EditProfile.css';
 
 const EditProfile = () => {
-  const [fullName, setFullName] = useState('Amar Patil');
-  const [phone, setPhone] = useState('9876543210');
+
+  const [fullName, setFullName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+
   const navigate = useNavigate();
 
-  const handleUpdate = () => {
-    alert('Profile updated!');
-    // Logic to update profile (can be connected to backend later)
+  // ================= FETCH USER DATA =================
+  useEffect(() => {
+    fetch('http://localhost/online-exam-system/auth/profile.php', {
+      method: "GET",
+      credentials: "include"
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success") {
+          setFullName(data.user.full_name);
+          setPhone(data.user.phone);
+          setEmail(data.user.email);
+        } else {
+          navigate("/login");
+        }
+      })
+      .catch(err => console.log(err));
+  }, [navigate]);
+
+
+  // ================= UPDATE PROFILE =================
+  const handleUpdate = async () => {
+
+    try {
+      const res = await fetch('http://localhost/online-exam-system/auth/profile.php', {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          full_name: fullName,
+          email: email,
+          phone: phone
+        })
+      });
+
+      const data = await res.json();
+
+      if (data.status === "success") {
+        alert("Profile updated successfully");
+        navigate("/profile"); // go back after update
+      } else {
+        alert(data.message);
+      }
+
+    } catch (error) {
+      console.log(error);
+      alert("Something went wrong");
+    }
   };
 
+
   const handleGoBack = () => {
-    navigate('/profile'); // Navigate back to the dashboard
+    navigate('/profile');
   };
+
 
   return (
     <div className="edit-profile-container">
-      {/* Edit Profile Card */}
+      
       <div className="card">
         <h2>Edit Profile</h2>
+
         <form onSubmit={(e) => e.preventDefault()}>
+
           <div className="input-group">
             <label htmlFor="fullName">Full Name</label>
             <input
@@ -30,6 +84,16 @@ const EditProfile = () => {
               id="fullName"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
+            />
+          </div>
+
+          <div className="input-group">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
@@ -43,13 +107,23 @@ const EditProfile = () => {
             />
           </div>
 
-          {/* Button Container for Update and Go Back buttons */}
           <div className="button-container">
-            <button type="button" onClick={handleUpdate}>Update Profile</button>
-            <button className="go-back-btn" type="button" onClick={handleGoBack}>Go Back</button>
+            <button type="button" onClick={handleUpdate}>
+              Update Profile
+            </button>
+
+            <button
+              className="go-back-btn"
+              type="button"
+              onClick={handleGoBack}
+            >
+              Go Back
+            </button>
           </div>
+
         </form>
       </div>
+
     </div>
   );
 };

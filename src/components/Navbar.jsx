@@ -4,14 +4,17 @@ import logo from "../assets/logo.jpeg";
 
 function Navbar() {
   const navigate = useNavigate();
-
-  const user = {
-    name: "Admin",
-    role: "admin"
-  };
+  const user = JSON.parse(localStorage.getItem("user"));
 
   const handleLogout = () => {
-    navigate("/");
+    sessionStorage.removeItem("user");
+    navigate("/login");
+  };
+
+  const getDashboardLink = () => {
+    if (user?.role === "admin") return "/admin-dashboard";
+    if (user?.role === "teacher") return "/teacher-dashboard";
+    return "/student-dashboard";
   };
 
   return (
@@ -22,8 +25,9 @@ function Navbar() {
 
       <ul className="nav-links">
 
+        {/* Dashboard */}
         <li>
-          <NavLink to="/dashboard">
+          <NavLink to={getDashboardLink()}>
             {({ isActive }) => (
               <span className={isActive ? "active" : "link"}>
                 Dashboard
@@ -32,16 +36,20 @@ function Navbar() {
           </NavLink>
         </li>
 
-        <li>
-          <NavLink to="/exams">
-            {({ isActive }) => (
-              <span className={isActive ? "active" : "link"}>
-                Exams
-              </span>
-            )}
-          </NavLink>
-        </li>
+        {/* Student Only */}
+        {user?.role === "student" && (
+          <li>
+            <NavLink to="/exams">
+              {({ isActive }) => (
+                <span className={isActive ? "active" : "link"}>
+                  Exams
+                </span>
+              )}
+            </NavLink>
+          </li>
+        )}
 
+        {/* Result (All) */}
         <li>
           <NavLink to="/resulthistory">
             {({ isActive }) => (
@@ -52,8 +60,8 @@ function Navbar() {
           </NavLink>
         </li>
 
-        {/* Admin Only */}
-        {user.role === "admin" && (
+        {/* Admin + Teacher */}
+        {(user?.role === "admin" || user?.role === "teacher") && (
           <li>
             <NavLink to="/addquestion">
               {({ isActive }) => (
@@ -65,6 +73,7 @@ function Navbar() {
           </li>
         )}
 
+        {/* Profile */}
         <li>
           <NavLink to="/profile">
             {({ isActive }) => (
@@ -75,6 +84,7 @@ function Navbar() {
           </NavLink>
         </li>
 
+        {/* Logout */}
         <li>
           <button onClick={handleLogout} className="logout-btn">
             Logout

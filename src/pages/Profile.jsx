@@ -15,21 +15,30 @@ const Profile = () => {
 
   const navigate = useNavigate();
 
-  // FETCH DATA
+  // ================= FETCH PROFILE =================
   useEffect(() => {
-    fetch('http://localhost/online-exam-system/auth/profile.php')
+    fetch('http://localhost/online-exam-system/auth/profile.php', {
+      method: "GET",
+      credentials: "include"
+    })
       .then(res => res.json())
       .then(data => {
-        if (!data.error) {
-          setUser(data);
+        if (data.status === "success") {
+          setUser(data.user);
+        } else {
+          console.log(data.message);
+          navigate("/login");
         }
       })
       .catch(err => console.log(err));
-  }, []);
+  }, [navigate]);
 
-  const handleUpdateProfile = () => {
-    navigate('/editprofile');
+
+  const handleUpdateProfile = async () => {
+    navigate('/EditProfile');
+   
   };
+
 
   const handleGoBack = () => {
     navigate('/dashboard');
@@ -38,10 +47,8 @@ const Profile = () => {
   return (
     <div className="profile-container">
 
-      {/* TOP SECTION (2 CARDS) */}
       <div className="top-section">
 
-        {/* PROFILE CARD */}
         <div className="card">
           <h2>PROFILE INFORMATION</h2>
 
@@ -54,7 +61,6 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* STATISTICS CARD */}
         <div className="card">
           <h3>STATISTICS</h3>
 
@@ -73,7 +79,6 @@ const Profile = () => {
 
       </div>
 
-      {/* ACTION BUTTONS */}
       <div className="profile-buttons">
         <button onClick={handleUpdateProfile}>Update Profile</button>
         <button onClick={handleGoBack}>Go Back</button>

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link  } from 'react-router-dom';
 import "../styles/Register.css";
 
 function Register() {
@@ -102,6 +103,7 @@ function Register() {
             <option value="">Select Role</option>
             <option value="student">Student</option>
             <option value="teacher">Teacher</option>
+            <option value="admin">Admin</option>
           </select>
 
           <input
@@ -120,7 +122,7 @@ function Register() {
         </form>
 
         <p>
-          Already have an account? Login
+         <Link to="/"> Already have an account? Login</Link>
         </p>
 
       </div>

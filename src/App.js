@@ -2,13 +2,12 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Layout from "./components/Layout";
-import Navbar from "./components/Navbar";
+import ProtectedRoute from "./ProtectedRoute";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import StudentDashboard from "./pages/student/StudentDashboard";
 import TeacherDashboard from "./pages/teacher/TeacherDashboard";
 
-import Dashboard from "./pages/Dashboard";
 import LoginForm from "./pages/LoginForm";
 import Exam from "./pages/Exam";
 import AddQuestion from "./pages/AddQuestion";
@@ -22,20 +21,7 @@ import SubmitExam from "./pages/SubmitExam";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/Editprofile";
 
-
-
-import "./styles/LoginForm.css";
-import "./styles/ExamList.css";
-import "./styles/Dashboard.css";
-import "./styles/ExamPage.css";
-import "./styles/Register.css";
-import "./styles/ResultHistory.css";
-import "./styles/Result.css";
-import "./styles/SubmitExam.css";
-import "./styles/Profile.css";
-import "./styles/EditProfile.css";
-
-
+import "./styles/LoginForm.css"; import "./styles/ExamList.css"; import "./styles/Dashboard.css"; import "./styles/ExamPage.css"; import "./styles/Register.css"; import "./styles/ResultHistory.css"; import "./styles/Result.css"; import "./styles/SubmitExam.css"; import "./styles/Profile.css"; import "./styles/EditProfile.css";
 
 function App() {
   return (
@@ -43,31 +29,132 @@ function App() {
       <div style={{ background: "#F9FAFB", minHeight: "100vh" }}>
         <Routes>
 
-          {/* Public Routes */}
+          {/* Public */}
           <Route path="/" element={<LoginForm />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<Register />} />
 
-          {/* Dashboard Routes */}
-          <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
-          <Route path="/admin-dashboard" element={<Layout><AdminDashboard /></Layout>} />
-          <Route path="/student-dashboard" element={<Layout><StudentDashboard /></Layout>} />
-          <Route path="/teacher-dashboard" element={<Layout><TeacherDashboard /></Layout>} />
+          {/* Dashboards */}
+          <Route
+            path="/admin-dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <Layout><AdminDashboard /></Layout>
+              </ProtectedRoute>
+            }
+          />
 
-          {/* Exam Routes */}
-          <Route path="/exams" element={<Layout><ExamList /></Layout>} />
-          <Route path="/exam" element={<Layout><Exam /></Layout>} />
-          <Route path="/addquestion" element={<Layout><AddQuestion /></Layout>} />
-          <Route path="/attemptexam" element={<Layout><ExamPage /></Layout>} />
-          <Route path="/timer" element={<Layout><ExamTimer /></Layout>} />
-          <Route path="/submitexam" element={<Layout><SubmitExam /></Layout>} />
-         
+          <Route
+            path="/teacher-dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["teacher"]}>
+                <Layout><TeacherDashboard /></Layout>
+              </ProtectedRoute>
+            }
+          />
 
-          {/* Result Routes */}
-          <Route path="/resulthistory" element={<Layout><ResultHistory /></Layout>} />
-          <Route path="/result" element={<Layout><Result /></Layout>} />
-          <Route path="/profile" element={<Layout><Profile /></Layout>} />
-          <Route path="/editprofile" element={<Layout><EditProfile /></Layout>} />
+          <Route
+            path="/student-dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["student"]}>
+                <Layout><StudentDashboard /></Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Exams */}
+          <Route
+            path="/exams"
+            element={
+              <ProtectedRoute allowedRoles={["student"]}>
+                <Layout><ExamList /></Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/exam"
+            element={
+              <ProtectedRoute allowedRoles={["student"]}>
+                <Layout><Exam /></Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/attemptexam"
+            element={
+              <ProtectedRoute allowedRoles={["student"]}>
+                <Layout><ExamPage /></Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/timer"
+            element={
+              <ProtectedRoute allowedRoles={["student"]}>
+                <Layout><ExamTimer /></Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/submitexam"
+            element={
+              <ProtectedRoute allowedRoles={["student"]}>
+                <Layout><SubmitExam /></Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Add Question */}
+          <Route
+            path="/addquestion"
+            element={
+              <ProtectedRoute allowedRoles={["admin", "teacher"]}>
+                <Layout><AddQuestion /></Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Results */}
+          <Route
+            path="/resulthistory"
+            element={
+              <ProtectedRoute allowedRoles={["admin", "teacher", "student"]}>
+                <Layout><ResultHistory /></Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/result"
+            element={
+              <ProtectedRoute allowedRoles={["student"]}>
+                <Layout><Result /></Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Profile */}
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute allowedRoles={["admin", "teacher", "student"]}>
+                <Layout><Profile /></Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/editprofile"
+            element={
+              <ProtectedRoute allowedRoles={["admin", "teacher", "student"]}>
+                <Layout><EditProfile /></Layout>
+              </ProtectedRoute>
+            }
+          />
 
         </Routes>
       </div>
