@@ -40,9 +40,26 @@ const Profile = () => {
   };
 
 
-  const handleGoBack = () => {
-    navigate('/dashboard');
-  };
+ const handleGoBack = () => {
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+
+  if (!storedUser) {
+    navigate("/login");
+    return;
+  }
+
+  const role = storedUser.role.toLowerCase();
+
+  if (role === "admin") {
+    navigate("/admin-dashboard");
+  } else if (role === "teacher") {
+    navigate("/teacher-dashboard");
+  } else if (role === "student") {
+    navigate("/student-dashboard");
+  } else {
+    navigate("/login"); // fallback
+  }
+};
 
   return (
     <div className="profile-container">
