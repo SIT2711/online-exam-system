@@ -14,7 +14,7 @@ function LoginForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // ❌ If role not selected
+    //  If role not selected
     if (!role) {
       setErrorMessage("Please select a role");
       return;
@@ -32,7 +32,7 @@ function LoginForm() {
           body: JSON.stringify({
             email,
             password,
-            role, // ✅ send role to backend
+            role, // send role to backend
           }),
         }
       );
@@ -43,25 +43,25 @@ function LoginForm() {
       if (data.status === "success") {
         const userRole = data.user.role?.toLowerCase();
 
-        // ❌ Role mismatch check
+        //  Role mismatch check
         if (role !== userRole) {
           setErrorMessage("❌ Selected role is incorrect!");
           return;
         }
 
-        // ✅ Save user (IMPORTANT: sessionStorage)
-        sessionStorage.setItem(
-          "user",
-          JSON.stringify({
-            id: data.user.id,
-            name: data.user.name,
-            role: userRole,
-          })
-        );
+        // / Save user (IMPORTANT: sessionStorage)
+        // sessionStorage.setItem(
+        //   "user",
+        //   JSON.stringify({
+        //     id: data.user.id,
+        //     name: data.user.name,
+        //     role: userRole,
+        //   })
+        // );
 
         setErrorMessage("");
 
-        // ✅ Redirect based on role
+        // Redirect based on role
         if (userRole === "admin") navigate("/admin-dashboard");
         else if (userRole === "teacher") navigate("/teacher-dashboard");
         else if (userRole === "student") navigate("/student-dashboard");

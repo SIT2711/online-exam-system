@@ -21,7 +21,11 @@ import SubmitExam from "./pages/SubmitExam";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/Editprofile";
 
-import "./styles/LoginForm.css"; import "./styles/ExamList.css"; import "./styles/Dashboard.css"; import "./styles/ExamPage.css"; import "./styles/Register.css"; import "./styles/ResultHistory.css"; import "./styles/Result.css"; import "./styles/SubmitExam.css"; import "./styles/Profile.css"; import "./styles/EditProfile.css";
+import "./styles/LoginForm.css"; import "./styles/ExamList.css";
+ import "./styles/Dashboard.css"; import "./styles/ExamPage.css"; 
+ import "./styles/Register.css"; import "./styles/ResultHistory.css"; 
+ import "./styles/Result.css"; import "./styles/SubmitExam.css"; 
+ import "./styles/Profile.css"; import "./styles/EditProfile.css";
 
 function App() {
   return (
