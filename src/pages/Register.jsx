@@ -27,7 +27,7 @@ function Register() {
     return;
   }
 
-  fetch("http://localhost/online-exam-api/auth/register.php", {
+  fetch("http://localhost/online-exam-system/auth/register.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded"
@@ -102,6 +102,7 @@ function Register() {
             <option value="">Select Role</option>
             <option value="student">Student</option>
             <option value="teacher">Teacher</option>
+            <option value="admin">Admin</option>
           </select>
 
           <input
