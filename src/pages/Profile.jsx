@@ -1,4 +1,4 @@
-// pages/profile.jsx
+// pages/Profile.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Profile.css';
@@ -17,9 +17,21 @@ const Profile = () => {
 
   // ================= FETCH PROFILE =================
   useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user") || "null");
+
+    if (!storedUser) {
+      navigate("/login");
+      return;
+    }
+
     fetch('http://localhost/online-exam-system/auth/profile.php', {
-      method: "GET",
-      credentials: "include"
+      method: "POST",   // ✅ changed to POST
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        user_id: storedUser.id
+      })
     })
       .then(res => res.json())
       .then(data => {
@@ -33,33 +45,25 @@ const Profile = () => {
       .catch(err => console.log(err));
   }, [navigate]);
 
-
-  const handleUpdateProfile = async () => {
-    navigate('/EditProfile');
-   
+  // ================= NAVIGATION =================
+  const handleUpdateProfile = () => {
+    navigate('/editprofile');
   };
 
+  const handleGoBack = () => {
+    const storedUser = JSON.parse(localStorage.getItem("user") || "null");
 
- const handleGoBack = () => {
-  const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (!storedUser) {
+      navigate("/login");
+      return;
+    }
 
-  if (!storedUser) {
-    navigate("/login");
-    return;
-  }
+    const role = storedUser.role;
 
-  const role = storedUser.role.toLowerCase();
-
-  if (role === "admin") {
-    navigate("/admin-dashboard");
-  } else if (role === "teacher") {
-    navigate("/teacher-dashboard");
-  } else if (role === "student") {
-    navigate("/student-dashboard");
-  } else {
-    navigate("/login"); // fallback
-  }
-};
+    if (role === "admin") navigate("/admin-dashboard");
+    else if (role === "teacher") navigate("/teacher-dashboard");
+    else navigate("/student-dashboard");
+  };
 
   return (
     <div className="profile-container">

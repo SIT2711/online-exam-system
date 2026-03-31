@@ -13,9 +13,21 @@ const EditProfile = () => {
 
   // ================= FETCH USER DATA =================
   useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user") || "null");
+
+    if (!storedUser) {
+      navigate("/login");
+      return;
+    }
+
     fetch('http://localhost/online-exam-system/auth/profile.php', {
-      method: "GET",
-      credentials: "include"
+      method: "POST",   // ✅ FIXED
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        user_id: storedUser.id
+      })
     })
       .then(res => res.json())
       .then(data => {
@@ -30,18 +42,20 @@ const EditProfile = () => {
       .catch(err => console.log(err));
   }, [navigate]);
 
-
   // ================= UPDATE PROFILE =================
   const handleUpdate = async () => {
 
+    const storedUser = JSON.parse(localStorage.getItem("user") || "null");
+
     try {
       const res = await fetch('http://localhost/online-exam-system/auth/profile.php', {
-        method: "POST",
-        credentials: "include",
+        method: "POST",   // ✅ keep POST
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
+          action: "update",   // ✅ IMPORTANT
+          user_id: storedUser.id,   // ✅ IMPORTANT
           full_name: fullName,
           email: email,
           phone: phone
@@ -52,7 +66,7 @@ const EditProfile = () => {
 
       if (data.status === "success") {
         alert("Profile updated successfully");
-        navigate("/profile"); // go back after update
+        navigate("/profile");
       } else {
         alert(data.message);
       }
@@ -63,11 +77,9 @@ const EditProfile = () => {
     }
   };
 
-
   const handleGoBack = () => {
     navigate('/profile');
   };
-
 
   return (
     <div className="edit-profile-container">
@@ -78,30 +90,27 @@ const EditProfile = () => {
         <form onSubmit={(e) => e.preventDefault()}>
 
           <div className="input-group">
-            <label htmlFor="fullName">Full Name</label>
+            <label>Full Name</label>
             <input
               type="text"
-              id="fullName"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
             />
           </div>
 
           <div className="input-group">
-            <label htmlFor="email">Email</label>
+            <label>Email</label>
             <input
               type="email"
-              id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
           <div className="input-group">
-            <label htmlFor="phone">Phone Number</label>
+            <label>Phone Number</label>
             <input
               type="text"
-              id="phone"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
             />
