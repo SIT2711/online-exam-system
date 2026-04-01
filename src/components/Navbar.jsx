@@ -7,7 +7,7 @@ function Navbar() {
   const user = JSON.parse(localStorage.getItem("user"));
 
   const handleLogout = () => {
-    sessionStorage.removeItem("user");
+    localStorage.removeItem("user");
     navigate("/login");
   };
 
