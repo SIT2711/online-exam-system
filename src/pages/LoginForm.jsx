@@ -1,21 +1,66 @@
-// src/components/LoginForm.js
-import React, { useState } from 'react';
-import '../styles/LoginForm.css'; // Importing the CSS for the LoginForm
+import { useNavigate, Link } from "react-router-dom";
+import React, { useState } from "react";
+import "../styles/LoginForm.css";
 
 function LoginForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !password || !role) {
-      setErrorMessage('All fields are required');
-    } else {
-      // Handle login logic here (e.g., make an API call)
-      console.log({ email, password, role });
-      setErrorMessage('');
+
+    if (!role) {
+      setErrorMessage("Please select a role");
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        "http://localhost/online-exam-system/auth/login.php",
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+            role, // ✅ send role
+          }),
+        }
+      );
+
+      const data = await res.json();
+      console.log("LOGIN RESPONSE:", data);
+
+      if (data.status === "success") {
+        const userRole = data.user.role.toLowerCase().trim();
+
+        // ✅ store user
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            id: data.user.user_id,
+            name: data.user.full_name,
+            role: userRole,
+          })
+        );
+
+        // ✅ redirect
+        if (userRole === "admin") navigate("/admin-dashboard");
+        else if (userRole === "teacher") navigate("/teacher-dashboard");
+        else if (userRole === "student") navigate("/student-dashboard");
+      } else {
+        setErrorMessage(data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Something went wrong!");
     }
   };
 
@@ -23,46 +68,55 @@ function LoginForm() {
     <div className="login-container">
       <div className="login-card">
         <h1>Exam System</h1>
+
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label>Email</label>
             <input
               type="email"
-              id="email"
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
+
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label>Password</label>
             <input
               type="password"
-              id="password"
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
+
           <div className="form-group">
-            <label htmlFor="role">Role</label>
+            <label>Select Role</label>
             <select
-              id="role"
               value={role}
               onChange={(e) => setRole(e.target.value)}
               required
             >
-              <option value="student">Student</option>
-              <option value="teacher">Teacher</option>
+              <option value="">Select Role</option>
               <option value="admin">Admin</option>
+              <option value="teacher">Teacher</option>
+              <option value="student">Student</option>
             </select>
           </div>
+
           <button type="submit" className="btn">
             Login
           </button>
-          {errorMessage && <div className="error-message">{errorMessage}</div>}
+
+          {errorMessage && (
+            <div className="error-message">{errorMessage}</div>
+          )}
+
           <div className="extra-links">
-            <a href="#">Forgot Password?</a> | <a href="#">Create A new Account</a>
+            <Link to="/">Forgot Password</Link> |{" "}
+            <Link to="/register">Create A New Account</Link>
           </div>
         </form>
       </div>
