@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/AddQuestion.css";
 
 function AddQuestion() {
@@ -11,7 +11,17 @@ function AddQuestion() {
     correctAnswer: ""
   });
 
+  const [exams, setExams] = useState([]);
+  const [examId, setExamId] = useState("");
   const [success, setSuccess] = useState(false);
+
+  // Fetch exams from backend
+  useEffect(() => {
+    fetch("http://localhost/online-exam-system/exam/get_exams.php")
+      .then((res) => res.json())
+      .then((data) => setExams(data))
+      .catch((err) => console.error("Error fetching exams:", err));
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -20,27 +30,60 @@ function AddQuestion() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Here you can send formData to backend or API
-    console.log("Question Added:", formData);
+    // Validation
+    if (!examId) {
+      alert("Please select exam");
+      return;
+    }
 
-    // Show success message
-    setSuccess(true);
+    const payload = {
+      exam_id: examId,
+      question_text: formData.question,
+      question_type: "MCQ",
+      marks: 1
+    };
 
-    // Clear form
-    setFormData({
-      question: "",
-      optionA: "",
-      optionB: "",
-      optionC: "",
-      optionD: "",
-      correctAnswer: ""
-    });
+    try {
+      const response = await fetch(
+        "http://localhost/online-exam-system/exam/add_question.php",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        }
+      );
 
-    // Hide success message after 3 seconds
-    setTimeout(() => setSuccess(false), 3000);
+      const data = await response.json();
+      console.log("Response:", data);
+
+      if (data.status === "success") {
+        setSuccess(true);
+
+        // Reset form
+        setFormData({
+          question: "",
+          optionA: "",
+          optionB: "",
+          optionC: "",
+          optionD: "",
+          correctAnswer: ""
+        });
+
+        setExamId("");
+
+        setTimeout(() => setSuccess(false), 3000);
+      } else {
+        alert(data.message || "Error adding question");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Failed to connect to backend");
+    }
   };
 
   return (
@@ -48,9 +91,26 @@ function AddQuestion() {
       <div className="add-question-card">
         <h2>Add Question</h2>
 
-        {success && <div className="success-msg">Question added successfully!</div>}
+        {success && (
+          <div className="success-msg">Question added successfully!</div>
+        )}
 
         <form onSubmit={handleSubmit}>
+          {/* 🔽 Exam Dropdown */}
+          <label>Select Exam</label>
+<select
+  value={examId}
+  onChange={(e) => setExamId(e.target.value)}
+  required
+>
+  <option value="">-- Select Exam --</option>
+  {exams.map((exam) => (
+    <option key={exam.exam_id} value={exam.exam_id}>
+      {exam.exam_title}
+    </option>
+  ))}
+</select>
+
           <label>Question</label>
           <input
             type="text"
