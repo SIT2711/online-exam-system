@@ -35,6 +35,18 @@ function Navbar() {
             )}
           </NavLink>
         </li>
+        {/* Admin + Teacher - Exam */}
+      {(user?.role === "admin" || user?.role === "teacher") && (
+        <li>
+          <NavLink to="/exam">
+            {({ isActive }) => (
+              <span className={isActive ? "active" : "link"}>
+              Exam
+              </span>
+                )}
+          </NavLink>
+        </li>
+        )}
 
         {/* Student Only */}
         {user?.role === "student" && (
