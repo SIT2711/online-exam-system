@@ -15,7 +15,6 @@ function AddQuestion() {
   const [examId, setExamId] = useState("");
   const [success, setSuccess] = useState(false);
 
-  
   useEffect(() => {
     fetch("http://localhost/online-exam-system/exam/get_exams.php")
       .then((res) => res.json())
@@ -33,17 +32,36 @@ function AddQuestion() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validation
     if (!examId) {
       alert("Please select exam");
       return;
     }
 
+    // 🔥 Prepare options array for DB
     const payload = {
       exam_id: examId,
       question_text: formData.question,
       question_type: "MCQ",
-      marks: 1
+      marks: 1,
+
+      options: [
+        {
+          option_text: formData.optionA,
+          is_correct: formData.correctAnswer === "A"
+        },
+        {
+          option_text: formData.optionB,
+          is_correct: formData.correctAnswer === "B"
+        },
+        {
+          option_text: formData.optionC,
+          is_correct: formData.correctAnswer === "C"
+        },
+        {
+          option_text: formData.optionD,
+          is_correct: formData.correctAnswer === "D"
+        }
+      ]
     };
 
     try {
@@ -64,7 +82,6 @@ function AddQuestion() {
       if (data.status === "success") {
         setSuccess(true);
 
-        // Reset form
         setFormData({
           question: "",
           optionA: "",
@@ -96,20 +113,20 @@ function AddQuestion() {
         )}
 
         <form onSubmit={handleSubmit}>
-          {/* 🔽 Exam Dropdown */}
+          {/* Exam Dropdown */}
           <label>Select Exam</label>
-<select
-  value={examId}
-  onChange={(e) => setExamId(e.target.value)}
-  required
->
-  <option value="">-- Select Exam --</option>
-  {exams.map((exam) => (
-    <option key={exam.exam_id} value={exam.exam_id}>
-      {exam.exam_title}
-    </option>
-  ))}
-</select>
+          <select
+            value={examId}
+            onChange={(e) => setExamId(e.target.value)}
+            required
+          >
+            <option value="">-- Select Exam --</option>
+            {exams.map((exam) => (
+              <option key={exam.exam_id} value={exam.exam_id}>
+                {exam.exam_title}
+              </option>
+            ))}
+          </select>
 
           <label>Question</label>
           <input
