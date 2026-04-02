@@ -92,7 +92,7 @@ function AddQuestion() {
         <h2>Add Question</h2>
 
         {success && (
-          <div className="success-msg">Question added successfully!</div>
+          <div className="success-msg">Question added successfully!!</div>
         )}
 
         <form onSubmit={handleSubmit}>
