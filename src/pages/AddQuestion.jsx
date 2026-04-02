@@ -15,7 +15,7 @@ function AddQuestion() {
   const [examId, setExamId] = useState("");
   const [success, setSuccess] = useState(false);
 
-  // Fetch exams from backend
+  
   useEffect(() => {
     fetch("http://localhost/online-exam-system/exam/get_exams.php")
       .then((res) => res.json())
