@@ -30,7 +30,7 @@ const Profile = () => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        user_id: storedUser.id
+        user_id: storedUser.user_id || storedUser.id
       })
     })
       .then(res => res.json())

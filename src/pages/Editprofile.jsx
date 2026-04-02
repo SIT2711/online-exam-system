@@ -26,7 +26,7 @@ const EditProfile = () => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        user_id: storedUser.id
+        user_id: storedUser.user_id || storedUser.id
       })
     })
       .then(res => res.json())
@@ -55,7 +55,7 @@ const EditProfile = () => {
         },
         body: JSON.stringify({
           action: "update",   // ✅ IMPORTANT
-          user_id: storedUser.id,   // ✅ IMPORTANT
+          user_id: storedUser.user_id || storedUser.id,   // ✅ IMPORTANT
           full_name: fullName,
           email: email,
           phone: phone
