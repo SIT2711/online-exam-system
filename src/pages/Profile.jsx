@@ -25,15 +25,13 @@ const Profile = () => {
     }
 
     fetch('http://localhost/online-exam-system/auth/profile.php', {
-      method: "GET",                // ✅ FIXED
-       credentials: "include"   // ✅ changed to POST
-    // method: "POST", 
-       // headers: {
-       // "Content-Type": "application/json"
-      //},
-      //body: JSON.stringify({
-       // user_id: storedUser.id
-      //})
+      method: "POST",   // ✅ changed to POST
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        user_id: storedUser.id
+      })
     })
       .then(res => res.json())
       .then(data => {
