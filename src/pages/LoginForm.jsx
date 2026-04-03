@@ -9,6 +9,9 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  
+  
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,10 +26,11 @@ function LoginForm() {
         "http://localhost/online-exam-system/auth/login.php",
         {
           method: "POST",
-          credentials: "include",
+          
           headers: {
             "Content-Type": "application/json",
           },
+           credentials: "include",
           body: JSON.stringify({
             email,
             password,
@@ -45,7 +49,7 @@ function LoginForm() {
         localStorage.setItem(
           "user",
           JSON.stringify({
-            id: data.user.user_id,
+            id: data.user.user_id, 
             name: data.user.full_name,
             role: userRole,
           })

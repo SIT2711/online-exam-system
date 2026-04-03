@@ -12,15 +12,65 @@ function Exam() {
   });
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Exam Created:", formData);
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    console.log("USER:", user); // debug
+
+   
+    if (!user || !user.id) {
+      alert("Please login first");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        "http://localhost/online-exam-system/exam/create_exam.php",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            
+            teacher_id: user.id,
+            exam_title: formData.examName,
+            subject: formData.subject,
+            duration: parseInt(formData.duration),
+            total_marks: parseInt(formData.totalQuestions),
+            
+            start_date: formData.startDate.replace("T", " ") + ":00",
+            end_date: formData.endDate.replace("T", " ") + ":00"
+          })
+        }
+      );
+
+      const data = await response.json();
+
+      console.log("RESPONSE:", data);
+
+      if (data.status === "success") {
+        alert("Exam created successfully!");
+
+        setFormData({
+          examName: "",
+          subject: "",
+          duration: "",
+          totalQuestions: "",
+          startDate: "",
+          endDate: ""
+        });
+      } else {
+        alert("❌ Error: " + data.message);
+      }
+    } catch (err) {
+      console.error("ERROR:", err);
+      alert("Request failed: " + err.message);
+    }
   };
 
   return (
@@ -29,7 +79,6 @@ function Exam() {
         <h2>Create Exam</h2>
 
         <form onSubmit={handleSubmit}>
-
           <label>Exam Name</label>
           <input
             type="text"
@@ -85,7 +134,6 @@ function Exam() {
           />
 
           <button type="submit">Create Exam</button>
-
         </form>
       </div>
     </div>
