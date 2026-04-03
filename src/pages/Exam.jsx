@@ -41,7 +41,7 @@ function Exam() {
             exam_title: formData.examName,
             subject: formData.subject,
             duration: parseInt(formData.duration),
-            total_marks: parseInt(formData.totalQuestions),
+            total_Questions: parseInt(formData.totalQuestions),
             
             start_date: formData.startDate.replace("T", " ") + ":00",
             end_date: formData.endDate.replace("T", " ") + ":00"
