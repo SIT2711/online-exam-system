@@ -26,10 +26,11 @@ function LoginForm() {
         "http://localhost/online-exam-system/auth/login.php",
         {
           method: "POST",
-          credentials: "include",
+          
           headers: {
             "Content-Type": "application/json",
           },
+           credentials: "include",
           body: JSON.stringify({
             email,
             password,

@@ -12,24 +12,62 @@ function Exam() {
   });
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Exam Created:", formData);
+
+    try {
+      const response = await fetch(
+        "http://localhost/online-exam-system/exam/create_exam.php",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            exam_title: formData.examName,
+            subject: formData.subject,
+            duration: formData.duration,
+            total_marks: formData.totalQuestions,
+            start_date: formData.startDate,
+            end_date: formData.endDate,
+            teacher_id: "1" // ✅ fixed
+          })
+        }
+      );
+
+      const text = await response.text();
+      console.log("RAW RESPONSE:", text);
+
+      const data = JSON.parse(text);
+
+      if (data.success) {
+        alert("Exam created successfully!");
+
+        setFormData({
+          examName: "",
+          subject: "",
+          duration: "",
+          totalQuestions: "",
+          startDate: "",
+          endDate: ""
+        });
+      } else {
+        alert("Error: " + data.message);
+      }
+    } catch (err) {
+      console.error("ERROR:", err);
+      alert("Request failed: " + err.message);
+    }
   };
 
   return (
     <div className="exam-page-container">
       <div className="exam-card">
         <h2>Create Exam</h2>
-
         <form onSubmit={handleSubmit}>
-
           <label>Exam Name</label>
           <input
             type="text"
@@ -85,7 +123,6 @@ function Exam() {
           />
 
           <button type="submit">Create Exam</button>
-
         </form>
       </div>
     </div>
