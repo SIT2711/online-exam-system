@@ -18,6 +18,16 @@ function Exam() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // ✅ GET USER
+    const user = JSON.parse(localStorage.getItem("user"));
+    console.log("USER:", user); // debug
+
+    // ✅ SAFETY CHECK
+    if (!user || !user.id) {
+      alert("Please login first");
+      return;
+    }
+
     try {
       const response = await fetch(
         "http://localhost/online-exam-system/exam/create_exam.php",
@@ -27,24 +37,25 @@ function Exam() {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
+            // ✅ FIXED HERE
+            teacher_id: user.id,
             exam_title: formData.examName,
             subject: formData.subject,
-            duration: formData.duration,
-            total_marks: formData.totalQuestions,
-            start_date: formData.startDate,
-            end_date: formData.endDate,
-            teacher_id: "1" // ✅ fixed
+            duration: parseInt(formData.duration),
+            total_marks: parseInt(formData.totalQuestions),
+            // ✅ FIX DATE FORMAT
+            start_date: formData.startDate.replace("T", " ") + ":00",
+            end_date: formData.endDate.replace("T", " ") + ":00"
           })
         }
       );
 
-      const text = await response.text();
-      console.log("RAW RESPONSE:", text);
+      const data = await response.json();
 
-      const data = JSON.parse(text);
+      console.log("RESPONSE:", data);
 
-      if (data.success) {
-        alert("Exam created successfully!");
+      if (data.status === "success") {
+        alert("✅ Exam created successfully!");
 
         setFormData({
           examName: "",
@@ -55,7 +66,7 @@ function Exam() {
           endDate: ""
         });
       } else {
-        alert("Error: " + data.message);
+        alert("❌ Error: " + data.message);
       }
     } catch (err) {
       console.error("ERROR:", err);
@@ -67,6 +78,7 @@ function Exam() {
     <div className="exam-page-container">
       <div className="exam-card">
         <h2>Create Exam</h2>
+
         <form onSubmit={handleSubmit}>
           <label>Exam Name</label>
           <input
