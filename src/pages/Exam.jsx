@@ -18,11 +18,10 @@ function Exam() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // ✅ GET USER
     const user = JSON.parse(localStorage.getItem("user"));
     console.log("USER:", user); // debug
 
-    // ✅ SAFETY CHECK
+   
     if (!user || !user.id) {
       alert("Please login first");
       return;
@@ -37,13 +36,13 @@ function Exam() {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            // ✅ FIXED HERE
+            
             teacher_id: user.id,
             exam_title: formData.examName,
             subject: formData.subject,
             duration: parseInt(formData.duration),
             total_marks: parseInt(formData.totalQuestions),
-            // ✅ FIX DATE FORMAT
+            
             start_date: formData.startDate.replace("T", " ") + ":00",
             end_date: formData.endDate.replace("T", " ") + ":00"
           })
@@ -55,7 +54,7 @@ function Exam() {
       console.log("RESPONSE:", data);
 
       if (data.status === "success") {
-        alert("✅ Exam created successfully!");
+        alert("Exam created successfully!");
 
         setFormData({
           examName: "",
