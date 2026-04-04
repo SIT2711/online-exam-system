@@ -6,7 +6,7 @@ function Exam() {
     examName: "",
     subject: "",
     duration: "",
-    totalQuestions: "",
+    totalmarks: "",
     startDate: "",
     endDate: ""
   });
@@ -41,7 +41,7 @@ function Exam() {
             exam_title: formData.examName,
             subject: formData.subject,
             duration: parseInt(formData.duration),
-            total_marks: parseInt(formData.totalQuestions),
+            total_marks: parseInt(formData.totalmarks),
             
             start_date: formData.startDate.replace("T", " ") + ":00",
             end_date: formData.endDate.replace("T", " ") + ":00"
@@ -60,7 +60,7 @@ function Exam() {
           examName: "",
           subject: "",
           duration: "",
-          totalQuestions: "",
+          totalmarks: "",
           startDate: "",
           endDate: ""
         });
@@ -106,11 +106,11 @@ function Exam() {
             required
           />
 
-          <label>Total Questions</label>
+          <label>Total Marks</label>
           <input
             type="number"
-            name="totalQuestions"
-            value={formData.totalQuestions}
+            name="totalmarks"
+            value={formData.totalmarks}
             onChange={handleChange}
             required
           />
