@@ -6,12 +6,10 @@ function ResultHistory() {
   const [userId, setUserId] = useState(null);
   const [role, setRole] = useState("student");
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   // ✅ GET USER FROM LOCALSTORAGE
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem("user"));
-    console.log("LOCALSTORAGE DATA:", JSON.stringify(storedData, null, 2));
 
     const id =
       storedData?.id ||
@@ -24,29 +22,22 @@ function ResultHistory() {
     setRole(userRole);
   }, []);
 
-  // ✅ FETCH DATA FROM API
+  // ✅ FETCH DATA
   useEffect(() => {
     if (!userId) return;
 
     setLoading(true);
-    setError(null);
 
     fetch(`http://localhost/online-exam-system/attempt/get_result.php?user_id=${userId}&role=${role}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log("API RESPONSE:", data);
-        if (data.status === "success" && Array.isArray(data.data)) {
+        if (data.status === "success") {
           setResults(data.data);
         } else {
           setResults([]);
-          setError(data.message || "No results found");
         }
       })
-      .catch((err) => {
-        console.log("Fetch error:", err);
-        setResults([]);
-        setError("Failed to load results");
-      })
+      .catch(() => setResults([]))
       .finally(() => setLoading(false));
   }, [userId, role]);
 
@@ -58,6 +49,10 @@ function ResultHistory() {
         <table>
           <thead>
             <tr>
+              {/* ✅ SHOW STUDENT NAME ONLY FOR ADMIN/TEACHER */}
+              {(role === "admin" || role === "teacher") && (
+                <th>Student Name</th>
+              )}
               <th>Exam Name</th>
               <th>Score</th>
               <th>Percentage</th>
@@ -68,29 +63,31 @@ function ResultHistory() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan="4" style={{ textAlign: "center" }}>
+                <td colSpan="5" style={{ textAlign: "center" }}>
                   Loading...
-                </td>
-              </tr>
-            ) : error ? (
-              <tr>
-                <td colSpan="4" style={{ textAlign: "center" }}>
-                  {error}
                 </td>
               </tr>
             ) : results.length === 0 ? (
               <tr>
-                <td colSpan="4" style={{ textAlign: "center" }}>
+                <td colSpan="5" style={{ textAlign: "center" }}>
                   No Results Found
                 </td>
               </tr>
             ) : (
               results.map((result, index) => (
                 <tr key={index}>
+                  
+                  {/* ✅ SHOW NAME ONLY FOR ADMIN/TEACHER */}
+                  {(role === "admin" || role === "teacher") && (
+                    <td>{result.student_name}</td>
+                  )}
+
                   <td>{result.exam_name}</td>
+
                   <td>
                     {result.correct_answers}/{result.total_questions}
                   </td>
+
                   <td
                     style={{
                       color:
@@ -103,6 +100,7 @@ function ResultHistory() {
                   >
                     {parseFloat(result.score).toFixed(0)}%
                   </td>
+
                   <td>
                     {new Date(result.created_at).toLocaleDateString()}
                   </td>
