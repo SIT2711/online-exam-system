@@ -1,26 +1,28 @@
 <?php
-// ✅ Headers
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 header("Access-Control-Allow-Origin: http://localhost:3000");
 header("Content-Type: application/json");
 
-// ✅ Include DB
 include("../config/db.php");
 
-// ✅ Check required parameters
+// ✅ Validate input
 if (!isset($_GET['user_id']) || !isset($_GET['role'])) {
     echo json_encode([
         "status" => "error",
-        "message" => "User ID and role are required"
+        "message" => "Missing user_id or role"
     ]);
     exit();
 }
 
 $user_id = intval($_GET['user_id']);
-$role = $_GET['role']; // expected: 'student', 'teacher', 'admin'
+$role = $_GET['role'];
 
-// ✅ Base SQL
+// ✅ FIXED SQL (using teacher_id)
 $sql = "SELECT 
-            u.full_name AS student_name,
+            s.full_name AS student_name,
+            t.full_name AS teacher_name,
             e.exam_title AS exam_name,
             r.total_marks AS total_questions,
             r.obtained_marks AS correct_answers,
@@ -28,34 +30,39 @@ $sql = "SELECT
             r.created_at
         FROM results r
         JOIN exam_attempts ea ON r.attempt_id = ea.attempt_id
-        JOIN users u ON ea.student_id = u.user_id
-        JOIN exams e ON ea.exam_id = e.exam_id";
+        JOIN users s ON ea.student_id = s.user_id
+        JOIN exams e ON ea.exam_id = e.exam_id
+        JOIN users t ON e.teacher_id = t.user_id";
 
-// ✅ Add condition for student
+// ✅ Role-based filtering
 if ($role === "student") {
-    $sql .= " WHERE ea.student_id = $user_id";
+    $sql .= " WHERE s.user_id = $user_id";
+} elseif ($role === "teacher") {
+    $sql .= " WHERE e.teacher_id = $user_id";
 }
+// admin = no filter (see all)
 
-// ✅ Execute query
+// ✅ Execute
 $result = $conn->query($sql);
 
-$data = [];
-
-if ($result) {
-    while ($row = $result->fetch_assoc()) {
-        $data[] = $row;
-    }
-
-    echo json_encode([
-        "status" => "success",
-        "data" => $data
-    ]);
-} else {
+if (!$result) {
     echo json_encode([
         "status" => "error",
         "message" => $conn->error
     ]);
+    exit();
 }
+
+$data = [];
+
+while ($row = $result->fetch_assoc()) {
+    $data[] = $row;
+}
+
+echo json_encode([
+    "status" => "success",
+    "data" => $data
+]);
 
 $conn->close();
 ?>
