@@ -7,6 +7,12 @@ function ResultHistory() {
   const [role, setRole] = useState("student");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const columnCount =
+    role === "admin"
+      ? 6
+      : role === "teacher"
+      ? 5
+      : 4;
 
   // ✅ GET USER FROM LOCALSTORAGE
   useEffect(() => {
@@ -75,29 +81,25 @@ function ResultHistory() {
           </thead>
 
           <tbody>
-            {/* ✅ Loading */}
             {loading ? (
               <tr>
-                <td colSpan="6" style={{ textAlign: "center" }}>
+                <td colSpan={columnCount} style={{ textAlign: "center" }}>
                   Loading...
                 </td>
               </tr>
             ) : error ? (
-              /* ✅ Error */
               <tr>
-                <td colSpan="6" style={{ textAlign: "center", color: "red" }}>
+                <td colSpan={columnCount} style={{ textAlign: "center", color: "red" }}>
                   {error}
                 </td>
               </tr>
             ) : results.length === 0 ? (
-              /* ✅ No Data */
               <tr>
-                <td colSpan="6" style={{ textAlign: "center" }}>
+                <td colSpan={columnCount} style={{ textAlign: "center" }}>
                   No Results Found
                 </td>
               </tr>
             ) : (
-              /* ✅ Data */
               results.map((result, index) => (
                 <tr key={index}>
                   {(role === "admin" || role === "teacher") && (
@@ -114,16 +116,7 @@ function ResultHistory() {
                     {result.correct_answers}/{result.total_questions}
                   </td>
 
-                  <td
-                    style={{
-                      color:
-                        result.score > 80
-                          ? "green"
-                          : result.score < 40
-                          ? "red"
-                          : "black",
-                    }}
-                  >
+                  <td>
                     {parseFloat(result.score).toFixed(0)}%
                   </td>
 
