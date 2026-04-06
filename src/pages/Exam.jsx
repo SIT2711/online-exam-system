@@ -12,16 +12,41 @@ function Exam() {
   });
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    let updatedData = { ...formData, [name]: value };
+
+                  
+  //  Auto calculate end date 
+    if (name === "startDate" || name === "duration") {
+      const start = name === "startDate" ? value : updatedData.startDate;
+      const duration = name === "duration" ? value : updatedData.duration;
+
+      if (start && duration) {
+        const startTime = new Date(start);
+        const endTime = new Date(startTime.getTime() + duration * 60000);
+           
+        
+     //timezone
+        const formattedEnd = new Date(
+          endTime.getTime() - endTime.getTimezoneOffset() * 60000
+        )
+          .toISOString()
+          .slice(0, 16);
+
+        updatedData.endDate = formattedEnd;
+      }
+    }
+
+    setFormData(updatedData);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const user = JSON.parse(localStorage.getItem("user"));
-    console.log("USER:", user); // debug
+    console.log("USER:", user);
 
-   
     if (!user || !user.id) {
       alert("Please login first");
       return;
@@ -36,13 +61,11 @@ function Exam() {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            
             teacher_id: user.id,
             exam_title: formData.examName,
             subject: formData.subject,
             duration: parseInt(formData.duration),
             total_marks: parseInt(formData.totalmarks),
-            
             start_date: formData.startDate.replace("T", " ") + ":00",
             end_date: formData.endDate.replace("T", " ") + ":00"
           })
@@ -50,7 +73,6 @@ function Exam() {
       );
 
       const data = await response.json();
-
       console.log("RESPONSE:", data);
 
       if (data.status === "success") {
@@ -65,7 +87,7 @@ function Exam() {
           endDate: ""
         });
       } else {
-        alert("❌ Error: " + data.message);
+        alert("Error: " + data.message);
       }
     } catch (err) {
       console.error("ERROR:", err);
@@ -124,13 +146,12 @@ function Exam() {
             required
           />
 
-          <label>End Date</label>
+          <label>End Date (Auto Calculated)</label>
           <input
             type="datetime-local"
             name="endDate"
             value={formData.endDate}
-            onChange={handleChange}
-            required
+            readOnly
           />
 
           <button type="submit">Create Exam</button>
