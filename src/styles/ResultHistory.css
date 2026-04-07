@@ -3,48 +3,101 @@
   min-height: 100vh;
   padding: 40px;
   font-family: Arial, sans-serif;
-}
-
-.result-history-container h2 {
   text-align: center;
-  color: #333333;
-  margin-bottom: 30px;
 }
 
+/* TITLE */
+.result-history-container h2 {
+  color: #333333;
+  margin-bottom: 20px;
+}
+
+/* 🔍 SEARCH BAR WRAPPER (NEW) */
+.search-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px; /* ✅ proper space */
+}
+
+/* SEARCH INPUT */
+.search-input {
+  width: 60%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+/* 📦 RESULT CARD (WHITE BOX) */
 .result-card {
   background-color: #FFFFFF;
   padding: 25px;
-  border-radius: 10px;
-  max-width: 750px;
-  margin: auto;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  width: 80%;              /* ✅ responsive width */
+  max-width: 900px;        /* ✅ prevents over-stretch */
+  margin: 0 auto;          /* ✅ center perfectly */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;        /* ✅ prevents overflow issue */
 }
 
+/* TABLE */
 table {
   width: 100%;
   border-collapse: collapse;
 }
 
+/* HEADER */
 th {
-  background-color: #00BFB2;
+  background-color: #14b8a6;
   color: white;
   padding: 12px;
   text-align: center;
 }
 
+/* CELLS */
 td {
-  padding: 10px;
+  padding: 12px;
   text-align: center;
   color: #333333;
-  border-bottom: 1px solid #ddd;
+  border: 1px solid #ddd;
 }
 
-/* alternating row color */
+/* ROW STRIPES */
 tbody tr:nth-child(even) {
-  background-color: #f4f4f4;
+  background-color: #f9f9f9;
 }
 
-/* hover effect */
+/* HOVER EFFECT */
 tbody tr:hover {
   background-color: #e6f7f6;
+}
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.pagination button {
+  padding: 8px 12px;
+  border: none;
+  background-color: #e0e0e0;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.pagination button:hover {
+  background-color: #14b8a6;
+  color: white;
+}
+
+.pagination .active {
+  background-color: #14b8a6;
+  color: white;
+  font-weight: bold;
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
