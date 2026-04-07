@@ -36,7 +36,7 @@ function Navbar() {
           </NavLink>
         </li>
         {/* Admin + Teacher - Exam */}
-      {(user?.role === "admin" || user?.role === "teacher") && (
+      {/* {(user?.role === "admin" || user?.role === "teacher") && (
         <li>
           <NavLink to="/exam">
             {({ isActive }) => (
@@ -46,10 +46,10 @@ function Navbar() {
                 )}
           </NavLink>
         </li>
-        )}
+        )} */}
 
         {/* Student Only */}
-        {user?.role === "student" && (
+        {(user?.role === "student" || user?.role === "teacher") && (
           <li>
             <NavLink to="/exams">
               {({ isActive }) => (
