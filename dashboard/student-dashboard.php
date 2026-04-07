@@ -7,9 +7,9 @@ include("../config/db.php");
 // Get student id
 $student_id = $_GET['student_id'];
 
-// ✅ Completed Exams
+// ✅ Completed Exams (DISTINCT exams)
 $completedQuery = "
-SELECT COUNT(*) as count 
+SELECT COUNT(DISTINCT exam_id) as count 
 FROM exam_attempts 
 WHERE student_id = '$student_id' AND status = 'completed'
 ";
