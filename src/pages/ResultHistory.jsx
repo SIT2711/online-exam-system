@@ -100,7 +100,7 @@ function ResultHistory() {
       </div>
 
       {/* 📦 TABLE CARD */}
-      <div className="result-card">
+      <div className={`result-card ${role}`}>
         <table>
           <thead>
             <tr>
