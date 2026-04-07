@@ -20,12 +20,15 @@ import ExamTimer from "./pages/ExamTimer";
 import SubmitExam from "./pages/SubmitExam";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/Editprofile";
+import EditExam from "./pages/EditExam";
 
 import "./styles/LoginForm.css"; import "./styles/ExamList.css";
  import "./styles/Dashboard.css"; import "./styles/ExamPage.css"; 
  import "./styles/Register.css"; import "./styles/ResultHistory.css"; 
  import "./styles/Result.css"; import "./styles/SubmitExam.css"; 
  import "./styles/Profile.css"; import "./styles/EditProfile.css";
+ import "./styles/EditExam.css";
+
 
 function App() {
   return (
@@ -81,6 +84,15 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["teacher", "admin"]}>
                 <Layout><Exam /></Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/edit-exam/:id"
+            element={
+              <ProtectedRoute allowedRoles={["teacher", "admin"]}>
+                <Layout><EditExam /></Layout>
               </ProtectedRoute>
             }
           />
