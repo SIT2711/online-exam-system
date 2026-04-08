@@ -2,9 +2,10 @@
 include "../config/db.php";
 
 header("Content-Type: application/json");
+header("Access-Control-Allow-Origin: *");
 
 // Fetch exams
-$sql = "SELECT exam_id, exam_title FROM exams";
+$sql = "SELECT exam_id, exam_title, subject, duration, total_marks, start_date, end_date FROM exams";
 $result = mysqli_query($conn, $sql);
 
 $exams = [];
@@ -15,5 +16,8 @@ if ($result) {
     }
 }
 
-echo json_encode($exams);
+echo json_encode([
+    "status" => "success",
+    "data" => $exams
+]);
 ?>
