@@ -17,76 +17,76 @@ const ExamList = () => {
 
   useEffect(() => {
     fetch("http://localhost/online-exam-system/exam/get_exams.php")
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         console.log("API DATA:", data);
         if (data.status === "success") {
           let exams = data.data;
-          // If teacher, filter exams by teacher_id
+
           if (userRole === "teacher" && userId) {
-            exams = exams.filter(exam => String(exam.teacher_id) === String(userId));
+            exams = exams.filter(
+              (exam) => String(exam.teacher_id) === String(userId)
+            );
           }
+
           setExamList(exams);
         }
       })
-      .catch(err => console.error("FETCH ERROR:", err));
+      .catch((err) => console.error("FETCH ERROR:", err));
   }, [userRole, userId]);
 
-
   const handleDelete = async (id) => {
-  // 1. Confirm before action
-  if (!window.confirm("Are you sure you want to delete this exam?")) return;
+    if (!window.confirm("Are you sure you want to delete this exam?")) return;
 
-  // 2. Set loading state to disable buttons and show "Deleting..."
-  setLoadingId(id);
+    setLoadingId(id);
 
-  try {
-    const res = await fetch("http://localhost/online-exam-system/exam/delete_exam.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: id }),
-    });
+    try {
+      const res = await fetch(
+        "http://localhost/online-exam-system/exam/delete_exam.php",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id }),
+        }
+      );
 
-    // 3. Verify response is valid JSON
-    const data = await res.json();
+      const data = await res.json();
 
-    if (data.status === "success") {
-      // 4. Update local state to remove the item from UI
-      setExamList((prev) => prev.filter((e) => e.exam_id !== id));
-    } else {
-      alert("Error: " + (data.message || "Failed to delete exam."));
+      if (data.status === "success") {
+        setExamList((prev) => prev.filter((e) => e.exam_id !== id));
+      } else {
+        alert("Error: " + (data.message || "Failed to delete exam."));
+      }
+    } catch (err) {
+      console.error("DELETE FETCH ERROR:", err);
+      alert("Network error or server is down.");
+    } finally {
+      setLoadingId(null);
     }
-  } catch (err) {
-    console.error("DELETE FETCH ERROR:", err);
-    alert("Network error or server is down.");
-  } finally {
-    // 5. CRITICAL FIX: Reset loading state so buttons become clickable again
-    setLoadingId(null);
-  }
-};
-
+  };
 
   const handleEdit = (exam) => {
     navigate(`/edit-exam/${exam.exam_id}`, { state: exam });
   };
 
+  // ✅ FIXED VIEW BUTTON
   const handleView = (exam) => {
-    navigate("/viewExam", { state: exam });
+    navigate(`/viewExam/${exam.exam_id}`);
   };
 
-
-
-  // Filter exams by search term (title or subject)
+  // 🔍 Search filter
   let filteredExams = examList;
   if (searchTerm.trim() !== "") {
     filteredExams = examList.filter(
       (exam) =>
-        (exam.exam_title && exam.exam_title.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (exam.subject && exam.subject.toLowerCase().includes(searchTerm.toLowerCase()))
+        (exam.exam_title &&
+          exam.exam_title.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (exam.subject &&
+          exam.subject.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   }
 
-  // Sort exams (latest first)
+  // 📅 Sorting
   let sortedExams = [...filteredExams];
   sortedExams.sort((a, b) => {
     if (a.start_date && b.start_date) {
@@ -95,9 +95,10 @@ const ExamList = () => {
     return b.exam_id - a.exam_id;
   });
 
-  // Pagination for teachers
+  // 📄 Pagination
   let visibleExams = sortedExams;
   let totalPages = 1;
+
   if (userRole === "teacher") {
     totalPages = Math.ceil(sortedExams.length / examsPerPage) || 1;
     const startIdx = (currentPage - 1) * examsPerPage;
@@ -106,7 +107,7 @@ const ExamList = () => {
 
   return (
     <div className="exam-list-container">
-      {/* ✅ HEADER */}
+      {/* HEADER */}
       <div className="top-bar">
         <h1 className="page-title">Available Exams</h1>
 
@@ -120,24 +121,31 @@ const ExamList = () => {
         )}
       </div>
 
-      {/* ✅ SEARCH BAR */}
+      {/* SEARCH */}
       <div style={{ margin: "16px 0", display: "flex", justifyContent: "flex-end" }}>
         <input
           type="text"
           placeholder="Search by title or subject..."
           value={searchTerm}
-          onChange={e => {
+          onChange={(e) => {
             setSearchTerm(e.target.value);
             setCurrentPage(1);
           }}
-          style={{ padding: "8px", width: "250px", borderRadius: "4px", border: "1px solid #ccc" }}
+          style={{
+            padding: "8px",
+            width: "250px",
+            borderRadius: "4px",
+            border: "1px solid #ccc",
+          }}
         />
       </div>
 
-      {/* ✅ EXAM LIST */}
+      {/* EXAM LIST */}
       <div className="exam-cards-container">
         {visibleExams.length === 0 ? (
-          <div style={{ textAlign: "center", width: "100%", color: "#888" }}>No exams found.</div>
+          <div style={{ textAlign: "center", width: "100%", color: "#888" }}>
+            No exams found.
+          </div>
         ) : (
           visibleExams.map((exam) => (
             <div className="exam-card" key={exam.exam_id}>
@@ -146,14 +154,14 @@ const ExamList = () => {
                 <p className="subject">{exam.subject}</p>
                 <p className="duration">
                   {exam.duration >= 60
-                    ? (exam.duration % 60 === 0
-                        ? `${exam.duration / 60} hours`
-                        : `${(exam.duration / 60).toFixed(1)} hours`)
+                    ? exam.duration % 60 === 0
+                      ? `${exam.duration / 60} hours`
+                      : `${(exam.duration / 60).toFixed(1)} hours`
                     : `${exam.duration} minutes`}
                 </p>
               </div>
 
-              {/* ✅ STUDENT VIEW */}
+              {/* STUDENT */}
               {userRole === "student" && (
                 <div className="action-buttons">
                   <button
@@ -166,13 +174,12 @@ const ExamList = () => {
                 </div>
               )}
 
-              {/* ✅ ADMIN / TEACHER VIEW */}
+              {/* ADMIN / TEACHER */}
               {(userRole === "admin" || userRole === "teacher") && (
                 <div className="action-buttons">
                   <button
                     className="edit-btn"
                     onClick={() => handleEdit(exam)}
-                    disabled={loadingId === exam.exam_id}
                   >
                     Edit
                   </button>
@@ -180,7 +187,6 @@ const ExamList = () => {
                   <button
                     className="delete-btn"
                     onClick={() => handleDelete(exam.exam_id)}
-                    disabled={loadingId === exam.exam_id}
                   >
                     {loadingId === exam.exam_id ? "Deleting..." : "Delete"}
                   </button>
@@ -198,23 +204,23 @@ const ExamList = () => {
         )}
       </div>
 
-      {/* ✅ PAGINATION (for teachers) */}
+      {/* PAGINATION */}
       {userRole === "teacher" && totalPages > 1 && (
         <div style={{ display: "flex", justifyContent: "center", margin: "24px 0" }}>
           <button
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
-            style={{ marginRight: 8 }}
           >
             Prev
           </button>
-          <span style={{ alignSelf: "center" }}>
+
+          <span style={{ margin: "0 10px" }}>
             Page {currentPage} of {totalPages}
           </span>
+
           <button
             onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
-            style={{ marginLeft: 8 }}
           >
             Next
           </button>

@@ -20,7 +20,11 @@ import ExamTimer from "./pages/ExamTimer";
 import SubmitExam from "./pages/SubmitExam";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/Editprofile";
+import ViewExam from "./pages/ViewExam";
+import EditExam from "./pages/EditExam";
+import EditQuestion from "./pages/EditQuestion"; // ✅ ADDED
 
+/* CSS */
 import "./styles/LoginForm.css";
 import "./styles/ExamList.css";
 import "./styles/Dashboard.css";
@@ -32,8 +36,8 @@ import "./styles/SubmitExam.css";
 import "./styles/Profile.css";
 import "./styles/EditProfile.css";
 import "./styles/EditExam.css";
-
-import EditExam from "./pages/EditExam";
+import "./styles/ViewExam.css";
+import "./styles/EditQuestion.css"; // ✅ OPTIONAL (if exists)
 
 function App() {
   return (
@@ -78,7 +82,7 @@ function App() {
           <Route
             path="/exams"
             element={
-              <ProtectedRoute allowedRoles={["student","teacher"]}>
+              <ProtectedRoute allowedRoles={["student", "teacher"]}>
                 <Layout><ExamList /></Layout>
               </ProtectedRoute>
             }
@@ -93,6 +97,27 @@ function App() {
             }
           />
 
+          {/* View Exam */}
+          <Route
+            path="/viewExam/:id"
+            element={
+              <ProtectedRoute allowedRoles={["admin", "teacher"]}>
+                <Layout><ViewExam /></Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ✅ EDIT QUESTION (FIXED) */}
+          <Route
+            path="/edit-question/:id"
+            element={
+              <ProtectedRoute allowedRoles={["admin", "teacher"]}>
+                <Layout><EditQuestion /></Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Student Exam */}
           <Route
             path="/attemptexam"
             element={

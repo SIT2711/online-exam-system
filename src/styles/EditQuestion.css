@@ -1,0 +1,77 @@
+/* PAGE CENTER */
+.edit-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f4f6f9;
+  padding: 20px;
+}
+
+/* CARD */
+.edit-card {
+  width: 100%;
+  max-width: 650px;
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* TITLE */
+.edit-card h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* LABEL */
+.edit-form label {
+  font-size: 13px;
+  font-weight: bold;
+  margin-top: 10px;
+  display: block;
+  color: #444;
+}
+
+/* INPUT */
+.edit-form input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+}
+
+.edit-form input:focus {
+  border-color: #14b8a6; /* ✅ match theme */
+}
+
+/* GRID */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+/* ✅ UPDATED BUTTON (MATCH VIEW / EDIT STYLE) */
+.edit-form button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+
+  background: #14b8a6;   /* ✅ SAME COLOR */
+  color: white;
+
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+/* HOVER */
+.edit-form button:hover {
+  opacity: 0.85;
+}
