@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "../styles/Exam.css";
 
 function Exam() {
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     examName: "",
     subject: "",
@@ -79,7 +77,6 @@ function Exam() {
 
       if (data.status === "success") {
         alert("Exam created successfully!");
-        navigate("/exams");
 
         setFormData({
           examName: "",
