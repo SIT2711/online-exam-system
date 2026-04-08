@@ -7,12 +7,13 @@ const ExamList = () => {
 
   const user = JSON.parse(localStorage.getItem("user"));
   const userRole = user?.role;
+  const userId = user?.id;
 
   const [examList, setExamList] = useState([]);
   const [loadingId, setLoadingId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const examsPerPage = 6;
+  const examsPerPage = 3;
 
   useEffect(() => {
     fetch("http://localhost/online-exam-system/exam/get_exams.php")
@@ -20,11 +21,16 @@ const ExamList = () => {
       .then(data => {
         console.log("API DATA:", data);
         if (data.status === "success") {
-          setExamList(data.data);
+          let exams = data.data;
+          // If teacher, filter exams by teacher_id
+          if (userRole === "teacher" && userId) {
+            exams = exams.filter(exam => String(exam.teacher_id) === String(userId));
+          }
+          setExamList(exams);
         }
       })
       .catch(err => console.error("FETCH ERROR:", err));
-  }, []);
+  }, [userRole, userId]);
 
 
   const handleDelete = async (id) => {
