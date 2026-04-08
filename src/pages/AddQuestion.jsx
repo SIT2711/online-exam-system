@@ -18,7 +18,16 @@ function AddQuestion() {
   useEffect(() => {
     fetch("http://localhost/online-exam-system/exam/get_exams.php")
       .then((res) => res.json())
-      .then((data) => setExams(data))
+      .then((data) => {
+        // Handle both {status, data} and array
+        if (Array.isArray(data)) {
+          setExams(data);
+        } else if (data.status === "success" && Array.isArray(data.data)) {
+          setExams(data.data);
+        } else {
+          setExams([]);
+        }
+      })
       .catch((err) => console.error("Error fetching exams:", err));
   }, []);
 

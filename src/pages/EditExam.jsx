@@ -23,12 +23,12 @@ function EditExam() {
   useEffect(() => {
     if (examData) {
       setFormData({
-        examName: examData.examName || "",
+        examName: examData.examName || examData.exam_title || "",
         subject: examData.subject || "",
-        duration: examData.duration?.replace(" minutes", "") || "",
-        totalmarks: examData.totalmarks || "",
-        startDate: "",
-        endDate: ""
+        duration: examData.duration?.toString().replace(" minutes", "") || "",
+        totalmarks: examData.totalmarks || examData.total_marks || "",
+        startDate: examData.startDate || examData.start_date || "",
+        endDate: examData.endDate || examData.end_date || ""
       });
     }
   }, [examData]);
