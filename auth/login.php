@@ -30,6 +30,7 @@ if (empty($email) || empty($password) || empty($role)) {
 // Prepare SQL statement
 $stmt = $conn->prepare("SELECT * FROM users WHERE email=? AND role=?");
 $stmt->bind_param("ss", $email, $role);
+
 $stmt->execute();
 $result = $stmt->get_result();
 
