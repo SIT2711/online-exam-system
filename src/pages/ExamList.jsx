@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate,useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "../styles/ExamList.css";
 
 const ExamList = () => {
@@ -34,27 +34,37 @@ const ExamList = () => {
 
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete exam?")) return;
+  // 1. Confirm before action
+  if (!window.confirm("Are you sure you want to delete this exam?")) return;
 
-    setLoadingId(id);
+  // 2. Set loading state to disable buttons and show "Deleting..."
+  setLoadingId(id);
 
-    const res = await fetch(
-      "http://localhost/online-exam-system/exam/delete_exam.php",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id }),
-      }
-    );
+  try {
+    const res = await fetch("http://localhost/online-exam-system/exam/delete_exam.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: id }),
+    });
 
+    // 3. Verify response is valid JSON
     const data = await res.json();
 
     if (data.status === "success") {
-      setExamList(prev => prev.filter(e => e.exam_id !== id));
+      // 4. Update local state to remove the item from UI
+      setExamList((prev) => prev.filter((e) => e.exam_id !== id));
+    } else {
+      alert("Error: " + (data.message || "Failed to delete exam."));
     }
-
+  } catch (err) {
+    console.error("DELETE FETCH ERROR:", err);
+    alert("Network error or server is down.");
+  } finally {
+    // 5. CRITICAL FIX: Reset loading state so buttons become clickable again
     setLoadingId(null);
-  };
+  }
+};
+
 
   const handleEdit = (exam) => {
     navigate(`/edit-exam/${exam.exam_id}`, { state: exam });
