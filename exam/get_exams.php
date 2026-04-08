@@ -4,8 +4,9 @@ include "../config/db.php";
 header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 
-// Get the ID from the URL (React will send this)
-$teacher_id = isset($_GET['teacher_id']) ? mysqli_real_escape_string($conn, $_GET['teacher_id']) : '';
+// Fetch exams
+$sql = "SELECT exam_id, exam_title, subject, duration, total_marks, start_date, end_date, teacher_id FROM exams";
+$result = mysqli_query($conn, $sql);
 
 if ($teacher_id) {
     // Only get exams belonging to this teacher
