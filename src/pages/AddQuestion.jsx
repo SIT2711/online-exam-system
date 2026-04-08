@@ -16,9 +16,23 @@ function AddQuestion() {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user?.id;
     fetch("http://localhost/online-exam-system/exam/get_exams.php")
       .then((res) => res.json())
-      .then((data) => setExams(data))
+      .then((data) => {
+        let examsArr = [];
+        if (Array.isArray(data)) {
+          examsArr = data;
+        } else if (data.status === "success" && Array.isArray(data.data)) {
+          examsArr = data.data;
+        }
+        // Filter exams by teacher_id
+        if (userId) {
+          examsArr = examsArr.filter(exam => String(exam.teacher_id) === String(userId));
+        }
+        setExams(examsArr);
+      })
       .catch((err) => console.error("Error fetching exams:", err));
   }, []);
 

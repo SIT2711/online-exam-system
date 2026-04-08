@@ -1,9 +1,15 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "../styles/Exam.css";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
+import "../styles/EditExam.css";
 
-function Exam() {
+function EditExam() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { id } = useParams();
+
+  // ✅ Get exam data from navigation
+  const examData = location.state;
+
   const [formData, setFormData] = useState({
     examName: "",
     subject: "",
@@ -13,13 +19,26 @@ function Exam() {
     endDate: ""
   });
 
+  // ✅ Prefill data
+  useEffect(() => {
+    if (examData) {
+      setFormData({
+        examName: examData.examName || examData.exam_title || "",
+        subject: examData.subject || "",
+        duration: examData.duration?.toString().replace(" minutes", "") || "",
+        totalmarks: examData.totalmarks || examData.total_marks || "",
+        startDate: examData.startDate || examData.start_date || "",
+        endDate: examData.endDate || examData.end_date || ""
+      });
+    }
+  }, [examData]);
+
+  // ✅ Handle change + auto end date
   const handleChange = (e) => {
     const { name, value } = e.target;
 
     let updatedData = { ...formData, [name]: value };
 
-                  
-  //  Auto calculate end date 
     if (name === "startDate" || name === "duration") {
       const start = name === "startDate" ? value : updatedData.startDate;
       const duration = name === "duration" ? value : updatedData.duration;
@@ -27,9 +46,7 @@ function Exam() {
       if (start && duration) {
         const startTime = new Date(start);
         const endTime = new Date(startTime.getTime() + duration * 60000);
-           
-        
-     //timezone
+
         const formattedEnd = new Date(
           endTime.getTime() - endTime.getTimezoneOffset() * 60000
         )
@@ -43,67 +60,51 @@ function Exam() {
     setFormData(updatedData);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // ✅ Update Exam
+  const handleUpdate = async (e) => {
+  e.preventDefault();
 
-    const user = JSON.parse(localStorage.getItem("user"));
-    console.log("USER:", user);
+  const updatedExam = {
+    id: Number(id),
+    examName: formData.examName,
+    subject: formData.subject,
+    duration: Number(formData.duration),
+    totalmarks: Number(formData.totalmarks),
+    startDate: formData.startDate,
+    endDate: formData.endDate,
+  };
 
-    if (!user || !user.id) {
-      alert("Please login first");
-      return;
+  const res = await fetch(
+    "http://localhost/online-exam-system/exam/update_exam.php",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedExam),
     }
+  );
 
-    try {
-      const response = await fetch(
-        "http://localhost/online-exam-system/exam/create_exam.php",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            teacher_id: user.id,
-            exam_title: formData.examName,
-            subject: formData.subject,
-            duration: parseInt(formData.duration),
-            total_marks: parseInt(formData.totalmarks),
-            start_date: formData.startDate.replace("T", " ") + ":00",
-            end_date: formData.endDate.replace("T", " ") + ":00"
-          })
-        }
-      );
+  const data = await res.json();
 
-      const data = await response.json();
-      console.log("RESPONSE:", data);
+  if (data.status === "success") {
+    alert("Updated successfully");
+    navigate("/exams");
+  }
+};
 
-      if (data.status === "success") {
-        alert("Exam created successfully!");
-        navigate("/exams");
 
-        setFormData({
-          examName: "",
-          subject: "",
-          duration: "",
-          totalmarks: "",
-          startDate: "",
-          endDate: ""
-        });
-      } else {
-        alert("Error: " + data.message);
-      }
-    } catch (err) {
-      console.error("ERROR:", err);
-      alert("Request failed: " + err.message);
-    }
+  // ✅ Cancel
+  const handleCancel = () => {
+    navigate(-1);
   };
 
   return (
-    <div className="exam-page-container">
-      <div className="exam-card">
-        <h2>Create Exam</h2>
+    <div className="edit-exam-container">
+      <div className="edit-exam-card">
+        <h2>Edit Exam</h2>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleUpdate}>
           <label>Exam Name</label>
           <input
             type="text"
@@ -149,7 +150,7 @@ function Exam() {
             required
           />
 
-          <label>End Date (Auto Calculated)</label>
+          <label>End Date</label>
           <input
             type="datetime-local"
             name="endDate"
@@ -157,11 +158,24 @@ function Exam() {
             readOnly
           />
 
-          <button type="submit">Create Exam</button>
+          {/* ✅ BUTTONS */}
+          <div className="btn-group">
+            <button type="submit" className="update-btn">
+              Update
+            </button>
+
+            <button
+              type="button"
+              className="cancel-btn"
+              onClick={handleCancel}
+            >
+              Cancel
+            </button>
+          </div>
         </form>
       </div>
     </div>
   );
 }
 
-export default Exam;
+export default EditExam;
