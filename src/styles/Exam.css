@@ -6,7 +6,8 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* aligns card at top, same as AddQuestion */
+  align-items: flex-start;
+  /* aligns card at top, same as AddQuestion */
   padding: 40px 20px;
   box-sizing: border-box;
 }
@@ -14,10 +15,11 @@
 .exam-card {
   background: #FFFFFF;
   width: 100%;
-  max-width: 420px; /* matches AddQuestion card width */
+  max-width: 420px;
+  /* matches AddQuestion card width */
   padding: 30px;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .exam-page-container .exam-card {
@@ -71,4 +73,34 @@
 
 .exam-card button:hover {
   background: #009f95;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;   /* full viewport width */
+  height: 100vh;  /* full viewport height */
+  background: rgba(0, 0, 0, 0.5);
+
+  display: flex;
+  justify-content: center;  /* horizontal center */
+  align-items: center;      /* vertical center */
+
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 25px 30px;
+  border-radius: 12px;
+  text-align: center;
+
+  min-width: 300px;
+  max-width: 90%;
+
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+
+  /* 🔥 Important fix */
+  margin: 0;   /* remove any shifting */
 }

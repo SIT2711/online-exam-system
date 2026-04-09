@@ -4,6 +4,7 @@ import "../styles/Exam.css";
 
 function Exam() {
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     examName: "",
     subject: "",
@@ -13,13 +14,16 @@ function Exam() {
     endDate: ""
   });
 
+  // ✅ NEW STATES (for popup)
+  const [examCode, setExamCode] = useState("");
+  const [showModal, setShowModal] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
     let updatedData = { ...formData, [name]: value };
 
-                  
-  //  Auto calculate end date 
+    // Auto calculate end date
     if (name === "startDate" || name === "duration") {
       const start = name === "startDate" ? value : updatedData.startDate;
       const duration = name === "duration" ? value : updatedData.duration;
@@ -27,9 +31,7 @@ function Exam() {
       if (start && duration) {
         const startTime = new Date(start);
         const endTime = new Date(startTime.getTime() + duration * 60000);
-           
-        
-     //timezone
+
         const formattedEnd = new Date(
           endTime.getTime() - endTime.getTimezoneOffset() * 60000
         )
@@ -47,7 +49,6 @@ function Exam() {
     e.preventDefault();
 
     const user = JSON.parse(localStorage.getItem("user"));
-    console.log("USER:", user);
 
     if (!user || !user.id) {
       alert("Please login first");
@@ -56,7 +57,7 @@ function Exam() {
 
     try {
       const response = await fetch(
-        "http://localhost/online-exam-system/exam/create_exam.php",
+        "http://localhost/ONLINE-EXAM-SYSTEM/exam/create_exam.php",
         {
           method: "POST",
           headers: {
@@ -75,12 +76,13 @@ function Exam() {
       );
 
       const data = await response.json();
-      console.log("RESPONSE:", data);
 
       if (data.status === "success") {
-        alert("Exam created successfully!");
-        navigate("/exams");
+        // ✅ SHOW POPUP INSTEAD OF ALERT
+        setExamCode(data.exam_code);
+        setShowModal(true);
 
+        // Reset form
         setFormData({
           examName: "",
           subject: "",
@@ -89,11 +91,11 @@ function Exam() {
           startDate: "",
           endDate: ""
         });
+
       } else {
         alert("Error: " + data.message);
       }
     } catch (err) {
-      console.error("ERROR:", err);
       alert("Request failed: " + err.message);
     }
   };
@@ -160,6 +162,34 @@ function Exam() {
           <button type="submit">Create Exam</button>
         </form>
       </div>
+
+      {/* ✅ POPUP MODAL */}
+      {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>✅ Exam Created</h2>
+            <p>Exam Code: <b>{examCode}</b></p>
+
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(examCode);
+                alert("Copied!");
+              }}
+            >
+              Copy Code
+            </button>
+
+            <button
+              onClick={() => {
+                setShowModal(false);
+                navigate("/exams");
+              }}
+            >
+              Go to Exams
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
