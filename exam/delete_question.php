@@ -6,7 +6,7 @@ header("Access-Control-Allow-Methods: POST, OPTIONS");
 
 include("../config/db.php");
 
-// handle preflight request (CORS)
+
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit(0);
 }
