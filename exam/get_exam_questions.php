@@ -38,7 +38,7 @@ while ($q = mysqli_fetch_assoc($result)) {
     $questions[] = $q;
 }
 
-// ✅ Proper response format
+
 echo json_encode([
     "status" => "success",
     "questions" => $questions
