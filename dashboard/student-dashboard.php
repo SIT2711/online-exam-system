@@ -1,38 +1,37 @@
 <?php
 header("Content-Type: application/json");
-header("Access-Control-Allow-Origin: *");
-
 include("../config/db.php");
 
-// Get student id
 $student_id = $_GET['student_id'];
 
-// ✅ Completed Exams (DISTINCT exams)
-$completedQuery = "
-SELECT COUNT(DISTINCT exam_id) as count 
-FROM exam_attempts 
-WHERE student_id = '$student_id' AND status = 'completed'
-";
-$completedResult = mysqli_query($conn, $completedQuery);
-$completedExams = mysqli_fetch_assoc($completedResult)['count'];
+// ✅ Completed exams
+$completed = mysqli_fetch_assoc(mysqli_query($conn,
+"SELECT COUNT(DISTINCT exam_id) as count 
+ FROM exam_attempts 
+ WHERE student_id='$student_id' AND status='completed'"
+))['count'];
 
-// ✅ Upcoming Exams (not attempted)
-$upcomingQuery = "
-SELECT COUNT(*) as count 
-FROM exams 
-WHERE exam_id NOT IN (
-    SELECT exam_id FROM exam_attempts WHERE student_id = '$student_id'
-)";
-$upcomingResult = mysqli_query($conn, $upcomingQuery);
-$upcomingExams = mysqli_fetch_assoc($upcomingResult)['count'];
+// ✅ Results
+$results = mysqli_fetch_assoc(mysqli_query($conn,
+"SELECT COUNT(*) as count 
+ FROM results r
+ JOIN exam_attempts ea ON r.attempt_id = ea.attempt_id
+ WHERE ea.student_id='$student_id'"
+))['count'];
 
-// ✅ Results Published (same as completed)
-$resultsPublished = $completedExams;
+// ✅ 🔥 Upcoming exams
+$upcoming = mysqli_fetch_assoc(mysqli_query($conn,
+"SELECT COUNT(*) as count 
+ FROM exams 
+ WHERE start_date > NOW()
+ AND exam_id NOT IN (
+   SELECT exam_id FROM exam_attempts WHERE student_id='$student_id'
+ )"
+))['count'];
 
-// Return JSON
 echo json_encode([
-    "upcomingExams" => $upcomingExams,
-    "completedExams" => $completedExams,
-    "resultsPublished" => $resultsPublished
+  "completedExams"=>$completed,
+  "resultsPublished"=>$results,
+  "upcomingExams"=>$upcoming
 ]);
 ?>
