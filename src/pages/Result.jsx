@@ -27,13 +27,9 @@ const Result = () => {
       url = `http://localhost/online-exam-system/attempt/get_result.php?user_id=${userId}`;
     }
 
-    console.log("API URL:", url);
-
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
-        console.log("API RESPONSE:", data);
-
         if (data.status === "success" && Array.isArray(data.data)) {
           setResults(data.data);
         } else {
@@ -72,7 +68,20 @@ const Result = () => {
 
   return (
     <div className="result-page">
-      <div style={{ width: "100%", maxWidth: "900px" }}>
+      
+      {/* ✅ 🔥 UPDATED WIDTH BASED ON ROLE */}
+      <div
+        style={{
+          width: "100%",
+          maxWidth:
+            role === "admin"
+              ? "1300px"
+              : role === "teacher"
+              ? "1000px"
+              : "900px",
+          margin: "0 auto"
+        }}
+      >
 
         <h2 className="result-title">Results</h2>
 
@@ -88,7 +97,7 @@ const Result = () => {
           style={{
             padding: "10px",
             width: "100%",
-            marginBottom: "20px",
+            marginBottom: "25px", // 🔥 increased spacing
             borderRadius: "5px",
             border: "1px solid #ccc"
           }}
@@ -96,30 +105,32 @@ const Result = () => {
 
         {/* ✅ ADMIN / TEACHER TABLE */}
         {(role === "admin" || role === "teacher") && (
-          <table>
-            <thead>
-              <tr>
-                <th>Student Name</th>
-                <th>Exam Name</th>
-                <th>Total Questions</th>
-                <th>Correct Answers</th>
-                <th>Score (%)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentResults.map((item, index) => (
-                <tr key={index}>
-                  <td>{item.student_name}</td>
-                  <td>{item.exam_name}</td>
-                  <td>{item.total_questions}</td>
-                  <td>{item.correct_answers}</td>
-                  <td style={{ color: getScoreColor(item.score) }}>
-                    {item.score}%
-                  </td>
+          <div style={{ overflowX: "auto" }}> {/* 🔥 prevents overflow */}
+            <table>
+              <thead>
+                <tr>
+                  <th>Student Name</th>
+                  <th>Exam Name</th>
+                  <th>Total Questions</th>
+                  <th>Correct Answers</th>
+                  <th>Score (%)</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {currentResults.map((item, index) => (
+                  <tr key={index}>
+                    <td>{item.student_name}</td>
+                    <td>{item.exam_name}</td>
+                    <td>{item.total_questions}</td>
+                    <td>{item.correct_answers}</td>
+                    <td style={{ color: getScoreColor(item.score) }}>
+                      {item.score}%
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
 
         {/* ✅ STUDENT CARD UI */}
