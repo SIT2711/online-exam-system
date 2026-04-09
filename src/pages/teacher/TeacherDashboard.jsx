@@ -1,26 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../../styles/Dashboard.css";
 
 function TeacherDashboard() {
+  const [data, setData] = useState({
+    createdExams: 0,
+    questionsAdded: 0,
+  });
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const teacher_id = user?.id;
+
+    fetch(`http://localhost/online-exam-system/dashboard/teacher-dashboard.php?teacher_id=${teacher_id}`)
+      .then((res) => res.json())
+      .then((res) => {
+        console.log("TEACHER DATA:", res);
+        setData(res);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
   return (
-    
-      <div className="dashboard-container">
-        <h1 className="dashboard-title">Teacher Dashboard</h1>
-        <p>Welcome! Manage your exams and questions here.</p>
+    <div className="dashboard-container">
+      <h1 className="dashboard-title">Teacher Dashboard</h1>
 
-        <div className="dashboard-cards">
-          <div className="dashboard-card">
-            <h2>8</h2>
-            <p>Created Exams</p>
-          </div>
+      <div className="dashboard-cards">
+        <div className="dashboard-card">
+          <h2>{data.createdExams}</h2>
+          <p>Created Exams</p>
+        </div>
 
-          <div className="dashboard-card">
-            <h2>50</h2>
-            <p>Questions Added</p>
-          </div>
+        <div className="dashboard-card">
+          <h2>{data.questionsAdded}</h2>
+          <p>Questions Added</p>
         </div>
       </div>
-    
+    </div>
   );
 }
 
