@@ -21,7 +21,19 @@ function EditQuestion() {
       .then((res) => res.json())
       .then((data) => {
         if (data.status === "success") {
-          setForm(data.question);
+          const q = data.question;
+
+          // ✅ Convert value → A/B/C/D
+          let correct = "";
+          if (q.correctAnswer === q.optionA) correct = "A";
+          else if (q.correctAnswer === q.optionB) correct = "B";
+          else if (q.correctAnswer === q.optionC) correct = "C";
+          else if (q.correctAnswer === q.optionD) correct = "D";
+
+          setForm({
+            ...q,
+            correctAnswer: correct,
+          });
         } else {
           alert("Question not found");
         }
@@ -37,7 +49,7 @@ function EditQuestion() {
     });
   };
 
-  // ✅ UPDATE QUESTION (FIXED)
+  // ✅ UPDATE QUESTION
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -53,13 +65,20 @@ function EditQuestion() {
         optionB: form.optionB,
         optionC: form.optionC,
         optionD: form.optionD,
-        correctAnswer: form.correctAnswer,
+
+        // ✅ Convert A/B/C/D → actual value
+        correctAnswer:
+          form.correctAnswer === "A"
+            ? form.optionA
+            : form.correctAnswer === "B"
+            ? form.optionB
+            : form.correctAnswer === "C"
+            ? form.optionC
+            : form.optionD,
       }),
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
-
         if (data.status === "success") {
           alert("Question updated successfully ✅");
           navigate(-1);
@@ -132,13 +151,20 @@ function EditQuestion() {
 
           </div>
 
+          {/* ✅ FIXED: Show A/B/C/D instead of value */}
           <label>Correct Answer (A / B / C / D)</label>
-          <input
+          <select
             name="correctAnswer"
             value={form.correctAnswer}
             onChange={handleChange}
             required
-          />
+          >
+            <option value="">Select correct option</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+          </select>
 
           <button type="submit" className="update-btn">
             Update Question
