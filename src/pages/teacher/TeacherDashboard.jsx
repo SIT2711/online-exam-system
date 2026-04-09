@@ -7,36 +7,18 @@ function TeacherDashboard() {
     questionsAdded: 0,
   });
 
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    fetchTeacherDashboard();
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    fetch(`http://localhost/online-exam-system/dashboard/teacher-dashboard.php?teacher_id=${user.id}`)
+      .then(res => res.json())
+      .then(data => setData(data))
+      .catch(err => console.log(err));
   }, []);
-
-  const fetchTeacherDashboard = async () => {
-    try {
-      const user = JSON.parse(localStorage.getItem("user"));
-
-      const res = await fetch(
-        `http://localhost/online-exam-system/dashboard/teacher-dashboard.php?teacher_id=${user.id}`
-      );
-
-      const result = await res.json();
-      setData(result);
-      setLoading(false);
-    } catch (error) {
-      console.log("Error:", error);
-    }
-  };
-
-  if (loading) {
-    return <h2>Loading dashboard...</h2>;
-  }
 
   return (
     <div className="dashboard-container">
       <h1 className="dashboard-title">Teacher Dashboard</h1>
-      <p>Welcome! Manage your exams and questions here.</p>
 
       <div className="dashboard-cards">
         <div className="dashboard-card">

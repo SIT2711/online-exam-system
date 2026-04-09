@@ -10,14 +10,32 @@
   font-family: Arial, sans-serif;
 }
 
+/* BASE CARD */
 .result-card {
   background-color: #FFFFFF;
-  padding: 30px;
-  border-radius: 10px;
-  width: 100%;
-  max-width: 420px; /* same width as other pages */
-  color: #333333;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  padding: 25px;
+  border-radius: 12px;
+  margin: 0 auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+}
+
+/* 👨‍🎓 STUDENT VIEW */
+.result-card.student {
+  width: 60%;
+  max-width: 700px;
+}
+
+/* 👩‍🏫 TEACHER VIEW */
+.result-card.teacher {
+  width: 75%;
+  max-width: 1000px;
+}
+
+/* 👨‍💼 ADMIN VIEW (WIDEST) */
+.result-card.admin {
+  width: 90%;
+  max-width: 1300px;
 }
 
 .result-title {

@@ -8,31 +8,18 @@ function StudentDashboard() {
     resultsPublished: 0,
   });
 
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    fetchStudentDashboard();
+    const user = JSON.parse(localStorage.getItem("user"));
+    const student_id = user?.id;
+
+    fetch(`http://localhost/online-exam-system/dashboard/student-dashboard.php?student_id=${student_id}`)
+      .then((res) => res.json())
+      .then((res) => {
+        console.log("API DATA:", res); // 👈 check in console
+        setData(res);
+      })
+      .catch((err) => console.log(err));
   }, []);
-
-  const fetchStudentDashboard = async () => {
-    try {
-      const user = JSON.parse(localStorage.getItem("user"));
-
-      const res = await fetch(
-        `http://localhost/online-exam-system/dashboard/student-dashboard.php?student_id=${user.id}`
-      );
-
-      const result = await res.json();
-      setData(result);
-      setLoading(false);
-    } catch (error) {
-      console.log("Error:", error);
-    }
-  };
-
-  if (loading) {
-    return <h2>Loading dashboard...</h2>;
-  }
 
   return (
     <div className="dashboard-container">
