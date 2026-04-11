@@ -24,8 +24,6 @@ import ViewExam from "./pages/ViewExam";
 import EditExam from "./pages/EditExam";
 import EditQuestion from "./pages/EditQuestion"; // ✅ ADDED
 
-import AttemptExam from "./pages/AttemptExam";
-
 /* CSS */
 import "./styles/LoginForm.css";
 import "./styles/ExamList.css";
@@ -194,8 +192,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
-          <Route path="/attempt-exam/:exam_id" element={<AttemptExam />} />
 
           {/* Edit Exam */}
           <Route
