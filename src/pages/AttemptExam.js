@@ -44,7 +44,7 @@ function AttemptExam() {
     }
 
     try {
-      // ✅ FORM DATA (NO CORS ISSUE)
+      //  FORM DATA (NO CORS ISSUE)
       const formData = new FormData();
       formData.append("exam_id", exam_id);
       formData.append("student_id", studentId);
@@ -55,7 +55,7 @@ function AttemptExam() {
         "http://localhost/online-exam-system/attempt/submit_exam.php",
         {
           method: "POST",
-          body: formData, // ✅ no headers
+          body: formData, // no headers
         }
       );
 

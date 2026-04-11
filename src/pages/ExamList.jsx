@@ -64,7 +64,7 @@ const ExamList = () => {
         const start = new Date(exam.start_date);
         const end = new Date(exam.end_date);
 
-        // ⏳ NOT STARTED
+        //  NOT STARTED
         if (now < start) {
           alert("Exam has not started yet");
           setExamList([]);
@@ -72,7 +72,7 @@ const ExamList = () => {
           return;
         }
 
-        // ⛔ TIME OVER (FIXED POSITION)
+        //  TIME OVER (FIXED POSITION)
         if (now > end) {
           alert("Exam time is over");
           setExamList([]);
@@ -80,7 +80,7 @@ const ExamList = () => {
           return;
         }
 
-        // ✅ CHECK ATTEMPT AFTER TIME CHECK
+        //  CHECK ATTEMPT AFTER TIME CHECK
         const formData = new FormData();
         formData.append("exam_id", exam.exam_id);
         formData.append("student_id", userId);
@@ -102,7 +102,7 @@ const ExamList = () => {
           return;
         }
 
-        // ✅ ALLOW EXAM
+        //  ALLOW EXAM
         setExamList([exam]);
 
       } else {
@@ -134,13 +134,13 @@ const ExamList = () => {
 
         const data = await res.json();
 
-        // ❌ BLOCK IF COMPLETED
+        //  BLOCK IF COMPLETED
         if (data.status === "completed") {
           alert("You have already completed this exam");
           return;
         }
 
-        // ✅ START / CONTINUE
+        //  START / CONTINUE
         navigate(`/attempt-exam/${exam.exam_id}`);
 
       } catch (err) {
