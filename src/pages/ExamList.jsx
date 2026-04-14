@@ -5,38 +5,111 @@ import "../styles/ExamList.css";
 const ExamList = () => {
   const navigate = useNavigate();
 
-  const user = JSON.parse(localStorage.getItem("user"));
-  const userRole = user?.role;
-  const userId = user?.id;
-
+  const [user, setUser] = useState(null);
   const [examList, setExamList] = useState([]);
   const [loadingId, setLoadingId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const examsPerPage = 3;
+  const [searchedExam, setSearchedExam] = useState(null);
+  const [starting, setStarting] = useState(false);
 
+  const userRole = user?.role;
+  const userId = user?.id;
+
+  // LOAD USER
   useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) setUser(JSON.parse(storedUser));
+  }, []);
+
+  // FETCH EXAMS
+  useEffect(() => {
+    if (!user || userRole === "student") return;
+
     fetch("http://localhost/online-exam-system/exam/get_exams.php")
       .then((res) => res.json())
       .then((data) => {
-        console.log("API DATA:", data);
-        if (data.status === "success") {
-          let exams = data.data;
+        if (data?.status === "success") {
+          let exams = data.data || [];
 
-          if (userRole === "teacher" && userId) {
+          if (userRole === "teacher") {
             exams = exams.filter(
               (exam) => String(exam.teacher_id) === String(userId)
             );
           }
 
           setExamList(exams);
+        } else {
+          setExamList([]);
         }
       })
-      .catch((err) => console.error("FETCH ERROR:", err));
-  }, [userRole, userId]);
+      .catch((err) => {
+        console.error("FETCH ERROR:", err);
+        setExamList([]);
+      });
+  }, [user, userRole, userId]);
 
+  // SAFE JSON FETCH (🔥 IMPORTANT FIX)
+  const safeJson = async (res) => {
+    const text = await res.text();
+    try {
+      return JSON.parse(text);
+    } catch (err) {
+      console.error("INVALID JSON RESPONSE:", text);
+      return null;
+    }
+  };
+
+  // START EXAM
+  const handleStartExam = async (exam_id) => {
+    if (starting) return;
+
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+
+    if (!storedUser?.id) {
+      alert("User not found. Please login again.");
+      return;
+    }
+
+    setStarting(true);
+
+    try {
+      const res = await fetch(
+        "http://localhost/online-exam-system/attempt/start_exam.php",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            exam_id: Number(exam_id),
+            student_id: Number(storedUser.id),
+          }),
+        }
+      );
+
+      const data = await safeJson(res);
+
+      if (!data) {
+        alert("Server error (invalid response)");
+        return;
+      }
+
+      console.log("START EXAM RESPONSE:", data);
+
+      if (data.status === "success" || data.status === "exists") {
+        navigate(`/attemptexam/${exam_id}`);
+      } else {
+        alert(data.message || "Cannot start exam");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Network error while starting exam");
+    } finally {
+      setStarting(false);
+    }
+  };
+
+  // DELETE
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this exam?")) return;
+    if (!window.confirm("Are you sure?")) return;
 
     setLoadingId(id);
 
@@ -50,182 +123,139 @@ const ExamList = () => {
         }
       );
 
-      const data = await res.json();
+      const data = await safeJson(res);
 
-      if (data.status === "success") {
+      if (data?.status === "success") {
         setExamList((prev) => prev.filter((e) => e.exam_id !== id));
       } else {
-        alert("Error: " + (data.message || "Failed to delete exam."));
+        alert(data?.message || "Delete failed");
       }
     } catch (err) {
-      console.error("DELETE FETCH ERROR:", err);
-      alert("Network error or server is down.");
+      console.error(err);
+      alert("Server error");
     } finally {
       setLoadingId(null);
     }
   };
 
+  // SEARCH
+  const handleSearch = async () => {
+    if (!searchTerm.trim()) return alert("Enter exam code");
+
+    try {
+      const res = await fetch(
+        "http://localhost/online-exam-system/exam/get_exam_by_code.php",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ exam_code: searchTerm.trim() }),
+        }
+      );
+
+      const data = await safeJson(res);
+
+      if (data?.status === "success") {
+        setSearchedExam(data.data);
+      } else {
+        setSearchedExam(null);
+        alert(data?.message || "Not found");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Server error");
+    }
+  };
+
+  // EDIT
   const handleEdit = (exam) => {
     navigate(`/edit-exam/${exam.exam_id}`, { state: exam });
   };
 
-  // ✅ FIXED VIEW BUTTON
+  // VIEW
   const handleView = (exam) => {
     navigate(`/viewExam/${exam.exam_id}`);
   };
 
-  // 🔍 Search filter
-  let filteredExams = examList;
-  if (searchTerm.trim() !== "") {
-    filteredExams = examList.filter(
-      (exam) =>
-        (exam.exam_title &&
-          exam.exam_title.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (exam.subject &&
-          exam.subject.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
-  }
-
-  // 📅 Sorting
-  let sortedExams = [...filteredExams];
-  sortedExams.sort((a, b) => {
-    if (a.start_date && b.start_date) {
-      return new Date(b.start_date) - new Date(a.start_date);
-    }
-    return b.exam_id - a.exam_id;
-  });
-
-  // 📄 Pagination
-  let visibleExams = sortedExams;
-  let totalPages = 1;
-
-  if (userRole === "teacher") {
-    totalPages = Math.ceil(sortedExams.length / examsPerPage) || 1;
-    const startIdx = (currentPage - 1) * examsPerPage;
-    visibleExams = sortedExams.slice(startIdx, startIdx + examsPerPage);
-  }
-
   return (
     <div className="exam-list-container">
-      {/* HEADER */}
+
       <div className="top-bar">
-        <h1 className="page-title">Available Exams</h1>
+        {userRole !== "student" && <h1>Available Exams</h1>}
 
         {(userRole === "admin" || userRole === "teacher") && (
-          <button
-            className="create-exam-btn"
-            onClick={() => navigate("/exam")}
-          >
+          <button onClick={() => navigate("/exam")}>
             + Create Exam
           </button>
         )}
       </div>
 
       {/* SEARCH */}
-      <div style={{ margin: "16px 0", display: "flex", justifyContent: "flex-end" }}>
-        <input
-          type="text"
-          placeholder="Search by title or subject..."
-          value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            setCurrentPage(1);
-          }}
-          style={{
-            padding: "8px",
-            width: "250px",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-          }}
-        />
-      </div>
+      {userRole === "student" && (
+        <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+          <input
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Enter exam code"
+            style={{
+              padding: "10px",
+              flex: 1,
+              borderRadius: "8px",
+              border: "1px solid #ccc",
+            }}
+          />
+          <button onClick={handleSearch}>Search</button>
+        </div>
+      )}
 
-      {/* EXAM LIST */}
+      {/* CARDS */}
       <div className="exam-cards-container">
-        {visibleExams.length === 0 ? (
-          <div style={{ textAlign: "center", width: "100%", color: "#888" }}>
-            No exams found.
-          </div>
+
+        {userRole === "student" ? (
+          searchedExam ? (
+            <div className="exam-card">
+              <h2>{searchedExam.exam_title}</h2>
+              <p>{searchedExam.subject}</p>
+              <p>{searchedExam.duration} min</p>
+
+              <button
+                onClick={() => handleStartExam(searchedExam.exam_id)}
+                disabled={starting}
+              >
+                {starting ? "Starting..." : "Start Exam"}
+              </button>
+            </div>
+          ) : (
+            <p>Search exam code to start exam</p>
+          )
         ) : (
-          visibleExams.map((exam) => (
-            <div className="exam-card" key={exam.exam_id}>
-              <div className="exam-content">
-                <h2 className="exam-name">{exam.exam_title}</h2>
-                <p className="subject">{exam.subject}</p>
-                <p className="duration">
-                  {exam.duration >= 60
-                    ? exam.duration % 60 === 0
-                      ? `${exam.duration / 60} hours`
-                      : `${(exam.duration / 60).toFixed(1)} hours`
-                    : `${exam.duration} minutes`}
-                </p>
+          examList.map((exam) => (
+            <div key={exam.exam_id} className="exam-card">
+
+              <h2>{exam.exam_title}</h2>
+              <p>{exam.subject}</p>
+
+              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+
+                <button onClick={() => handleEdit(exam)}>
+                  Edit
+                </button>
+
+                <button
+                  onClick={() => handleDelete(exam.exam_id)}
+                  disabled={loadingId === exam.exam_id}
+                >
+                  {loadingId === exam.exam_id ? "Deleting..." : "Delete"}
+                </button>
+
+                <button onClick={() => handleView(exam)}>
+                  View
+                </button>
+
               </div>
-
-              {/* STUDENT */}
-              {userRole === "student" && (
-                <div className="action-buttons">
-                  <button
-                    className="start-exam-btn"
-                    onClick={() => navigate("/attemptexam")}
-                    disabled={loadingId === exam.exam_id}
-                  >
-                    {loadingId === exam.exam_id ? "Loading..." : "Start Exam"}
-                  </button>
-                </div>
-              )}
-
-              {/* ADMIN / TEACHER */}
-              {(userRole === "admin" || userRole === "teacher") && (
-                <div className="action-buttons">
-                  <button
-                    className="edit-btn"
-                    onClick={() => handleEdit(exam)}
-                  >
-                    Edit
-                  </button>
-
-                  <button
-                    className="delete-btn"
-                    onClick={() => handleDelete(exam.exam_id)}
-                  >
-                    {loadingId === exam.exam_id ? "Deleting..." : "Delete"}
-                  </button>
-
-                  <button
-                    className="view-btn"
-                    onClick={() => handleView(exam)}
-                  >
-                    View
-                  </button>
-                </div>
-              )}
             </div>
           ))
         )}
       </div>
-
-      {/* PAGINATION */}
-      {userRole === "teacher" && totalPages > 1 && (
-        <div style={{ display: "flex", justifyContent: "center", margin: "24px 0" }}>
-          <button
-            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-            disabled={currentPage === 1}
-          >
-            Prev
-          </button>
-
-          <span style={{ margin: "0 10px" }}>
-            Page {currentPage} of {totalPages}
-          </span>
-
-          <button
-            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </button>
-        </div>
-      )}
     </div>
   );
 };

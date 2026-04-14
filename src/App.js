@@ -1,30 +1,41 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
+/* Layout + Security */
 import Layout from "./components/Layout";
 import ProtectedRoute from "./ProtectedRoute";
 
+/* Dashboards */
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import StudentDashboard from "./pages/student/StudentDashboard";
 import TeacherDashboard from "./pages/teacher/TeacherDashboard";
 
+/* Auth */
 import LoginForm from "./pages/LoginForm";
-import Exam from "./pages/Exam";
-import AddQuestion from "./pages/AddQuestion";
-import ExamList from "./pages/ExamList";
-import ExamPage from "./pages/ExamPage";
 import Register from "./pages/Register";
-import ResultHistory from "./pages/ResultHistory";
-import Result from "./pages/Result";
-import ExamTimer from "./pages/ExamTimer";
-import SubmitExam from "./pages/SubmitExam";
-import Profile from "./pages/Profile";
-import EditProfile from "./pages/Editprofile";
+
+/* Exam */
+import Exam from "./pages/Exam";
+import ExamList from "./pages/ExamList";
+import AttemptExam from "./pages/AttemptExam";
+import AddQuestion from "./pages/AddQuestion";
+
+/* Exam Management */
 import ViewExam from "./pages/ViewExam";
 import EditExam from "./pages/EditExam";
-import EditQuestion from "./pages/EditQuestion"; // ✅ ADDED
+import EditQuestion from "./pages/EditQuestion";
 
-import AttemptExam from "./pages/AttemptExam";
+/* Result */
+import ResultHistory from "./pages/ResultHistory";
+import Result from "./pages/Result";
+import SubmitExam from "./pages/SubmitExam";
+
+/* Profile */
+import Profile from "./pages/Profile";
+import EditProfile from "./pages/Editprofile";
+
+/* Timer */
+import ExamTimer from "./pages/ExamTimer";
 
 /* CSS */
 import "./styles/LoginForm.css";
@@ -39,7 +50,7 @@ import "./styles/Profile.css";
 import "./styles/EditProfile.css";
 import "./styles/EditExam.css";
 import "./styles/ViewExam.css";
-import "./styles/EditQuestion.css"; // ✅ OPTIONAL (if exists)
+import "./styles/EditQuestion.css";
 
 function App() {
   return (
@@ -47,12 +58,12 @@ function App() {
       <div style={{ background: "#F9FAFB", minHeight: "100vh" }}>
         <Routes>
 
-          {/* Public */}
+          {/* ================= PUBLIC ROUTES ================= */}
           <Route path="/" element={<LoginForm />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<Register />} />
 
-          {/* Dashboards */}
+          {/* ================= DASHBOARDS ================= */}
           <Route
             path="/admin-dashboard"
             element={
@@ -80,7 +91,7 @@ function App() {
             }
           />
 
-          {/* Exams */}
+          {/* ================= EXAMS ================= */}
           <Route
             path="/exams"
             element={
@@ -93,13 +104,13 @@ function App() {
           <Route
             path="/exam"
             element={
-              <ProtectedRoute allowedRoles={["teacher", "admin"]}>
+              <ProtectedRoute allowedRoles={["admin", "teacher"]}>
                 <Layout><Exam /></Layout>
               </ProtectedRoute>
             }
           />
 
-          {/* View Exam */}
+          {/* ================= VIEW / EDIT ================= */}
           <Route
             path="/viewExam/:id"
             element={
@@ -109,7 +120,15 @@ function App() {
             }
           />
 
-          {/* ✅ EDIT QUESTION (FIXED) */}
+          <Route
+            path="/edit-exam/:id"
+            element={
+              <ProtectedRoute allowedRoles={["admin", "teacher"]}>
+                <Layout><EditExam /></Layout>
+              </ProtectedRoute>
+            }
+          />
+
           <Route
             path="/edit-question/:id"
             element={
@@ -119,12 +138,21 @@ function App() {
             }
           />
 
-          {/* Student Exam */}
           <Route
-            path="/attemptexam"
+            path="/addquestion"
+            element={
+              <ProtectedRoute allowedRoles={["admin", "teacher"]}>
+                <Layout><AddQuestion /></Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ================= STUDENT EXAM FLOW ================= */}
+          <Route
+            path="/attemptexam/:exam_id"
             element={
               <ProtectedRoute allowedRoles={["student"]}>
-                <Layout><ExamPage /></Layout>
+                <Layout><AttemptExam /></Layout>
               </ProtectedRoute>
             }
           />
@@ -147,17 +175,7 @@ function App() {
             }
           />
 
-          {/* Add Question */}
-          <Route
-            path="/addquestion"
-            element={
-              <ProtectedRoute allowedRoles={["admin", "teacher"]}>
-                <Layout><AddQuestion /></Layout>
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Results */}
+          {/* ================= RESULTS ================= */}
           <Route
             path="/resulthistory"
             element={
@@ -176,7 +194,7 @@ function App() {
             }
           />
 
-          {/* Profile */}
+          {/* ================= PROFILE ================= */}
           <Route
             path="/profile"
             element={
@@ -191,18 +209,6 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["admin", "teacher", "student"]}>
                 <Layout><EditProfile /></Layout>
-              </ProtectedRoute>
-            }
-          />
-
-          <Route path="/attempt-exam/:exam_id" element={<AttemptExam />} />
-
-          {/* Edit Exam */}
-          <Route
-            path="/edit-exam/:id"
-            element={
-              <ProtectedRoute allowedRoles={["teacher", "admin"]}>
-                <Layout><EditExam /></Layout>
               </ProtectedRoute>
             }
           />
