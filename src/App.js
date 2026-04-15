@@ -16,13 +16,12 @@ import ExamPage from "./pages/ExamPage";
 import Register from "./pages/Register";
 import ResultHistory from "./pages/ResultHistory";
 import Result from "./pages/Result";
-import ExamTimer from "./pages/ExamTimer";
 import SubmitExam from "./pages/SubmitExam";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/Editprofile";
 import ViewExam from "./pages/ViewExam";
 import EditExam from "./pages/EditExam";
-import EditQuestion from "./pages/EditQuestion"; // ✅ ADDED
+import EditQuestion from "./pages/EditQuestion";
 
 import AttemptExam from "./pages/AttemptExam";
 
@@ -39,7 +38,7 @@ import "./styles/Profile.css";
 import "./styles/EditProfile.css";
 import "./styles/EditExam.css";
 import "./styles/ViewExam.css";
-import "./styles/EditQuestion.css"; // ✅ OPTIONAL (if exists)
+import "./styles/EditQuestion.css";
 
 function App() {
   return (
@@ -109,7 +108,7 @@ function App() {
             }
           />
 
-          {/* ✅ EDIT QUESTION (FIXED) */}
+          {/* Edit Question */}
           <Route
             path="/edit-question/:id"
             element={
@@ -119,25 +118,17 @@ function App() {
             }
           />
 
-          {/* Student Exam */}
+          {/* ✅ FIXED: ONLY ONE AttemptExam route */}
           <Route
-            path="/attemptexam"
+            path="/attemptexam/:exam_id"
             element={
               <ProtectedRoute allowedRoles={["student"]}>
-                <Layout><ExamPage /></Layout>
+                <Layout><AttemptExam /></Layout>
               </ProtectedRoute>
             }
           />
 
-          <Route
-            path="/timer"
-            element={
-              <ProtectedRoute allowedRoles={["student"]}>
-                <Layout><ExamTimer /></Layout>
-              </ProtectedRoute>
-            }
-          />
-
+          {/* Submit Exam */}
           <Route
             path="/submitexam"
             element={
@@ -194,8 +185,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
-          <Route path="/attempt-exam/:exam_id" element={<AttemptExam />} />
 
           {/* Edit Exam */}
           <Route
