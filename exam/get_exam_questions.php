@@ -1,46 +1,42 @@
 <?php
-include "../config/db.php";
-
 header("Content-Type: application/json");
-
-if (!isset($_GET['exam_id'])) {
-    echo json_encode([
-        "status" => "error",
-        "message" => "exam_id is required"
-    ]);
-    exit();
-}
+include "../config/db.php";
 
 $exam_id = $_GET['exam_id'];
 
-// ✅ Get Questions
-$sql = "SELECT * FROM questions WHERE exam_id = '$exam_id'";
-$result = mysqli_query($conn, $sql);
+// ✅ GET EXAM (FOR TIMER)
+$examQuery = "SELECT * FROM exams WHERE exam_id = '$exam_id'";
+$examResult = mysqli_query($conn, $examQuery);
+$exam = mysqli_fetch_assoc($examResult);
 
+// ✅ GET QUESTIONS
 $questions = [];
 
-while ($q = mysqli_fetch_assoc($result)) {
+$qQuery = "SELECT * FROM questions WHERE exam_id = '$exam_id'";
+$qResult = mysqli_query($conn, $qQuery);
 
-    $question_id = $q['question_id'];
+while ($q = mysqli_fetch_assoc($qResult)) {
 
-    // ✅ Get options for each question
-    $opt_sql = "SELECT option_text, is_correct FROM options WHERE question_id = '$question_id'";
-    $opt_result = mysqli_query($conn, $opt_sql);
+    $qid = $q['question_id'];
+
+    // ✅ GET OPTIONS FOR EACH QUESTION
+    $optQuery = "SELECT * FROM options WHERE question_id = '$qid'";
+    $optResult = mysqli_query($conn, $optQuery);
 
     $options = [];
-    while ($opt = mysqli_fetch_assoc($opt_result)) {
+
+    while ($opt = mysqli_fetch_assoc($optResult)) {
         $options[] = $opt;
     }
 
-    // Attach options to question
     $q['options'] = $options;
-
     $questions[] = $q;
 }
 
-
+// ✅ FINAL RESPONSE
 echo json_encode([
     "status" => "success",
+    "duration" => $exam['duration'],
     "questions" => $questions
 ]);
 ?>
