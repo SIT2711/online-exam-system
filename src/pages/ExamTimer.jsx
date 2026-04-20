@@ -1,54 +1,40 @@
-import React, { useState, useEffect } from "react";
-import "../styles/ExamTimer.css";
+import React, { useEffect, useState } from "react";
 
-function ExamTimer() {
+function ExamTimer({ duration, onTimeUp }) {
+  const [timeLeft, setTimeLeft] = useState(0);
 
-  // 45 minutes = 2700 seconds
-  const [timeLeft, setTimeLeft] = useState(2700);
-
+  // ✅ reset when duration changes
   useEffect(() => {
+    if (duration > 0) {
+      setTimeLeft(duration * 60);
+    }
+  }, [duration]);
+
+  // countdown
+  useEffect(() => {
+    if (timeLeft <= 0) return;
 
     const timer = setInterval(() => {
-
-      setTimeLeft((prevTime) => {
-
-        if (prevTime <= 1) {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
           clearInterval(timer);
-          alert("Time is up! Exam will be submitted.");
+          onTimeUp();
           return 0;
         }
-
-        return prevTime - 1;
-
+        return prev - 1;
       });
-
     }, 1000);
 
     return () => clearInterval(timer);
+  }, [timeLeft]);
 
-  }, []);
-
-  // Convert seconds to minutes and seconds
-  const minutes = Math.floor(timeLeft / 60);
-  const seconds = timeLeft % 60;
+  const min = Math.floor(timeLeft / 60);
+  const sec = timeLeft % 60;
 
   return (
-    <div className="timer-page">
-
-      <div className="timer-card">
-
-        <h2 className="timer-title">Time Remaining</h2>
-
-        <div
-          className="timer-time"
-          style={{ color: timeLeft < 300 ? "red" : "#0d6efd" }}
-        >
-          {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
-        </div>
-
-      </div>
-
-    </div>
+    <h3 style={{ color: timeLeft < 300 ? "red" : "green" }}>
+      Time Left: {min}:{sec < 10 ? "0" : ""}{sec}
+    </h3>
   );
 }
 

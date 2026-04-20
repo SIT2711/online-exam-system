@@ -262,7 +262,7 @@ const ExamList = () => {
     style={{ width: "100%" }}   // 🔥 IMPORTANT
     disabled={searchedExam.status !== "active"}
     onClick={() =>
-      navigate("/attemptexam", { state: searchedExam })
+      navigate(`/attemptexam/${searchedExam.exam_id}`) 
     }
   >
     {searchedExam.status === "active"
