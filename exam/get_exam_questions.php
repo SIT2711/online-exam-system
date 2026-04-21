@@ -1,104 +1,59 @@
 <?php
-<<<<<<< HEAD
-
 include "../config/db.php";
 
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
+$exam_id = $_GET['exam_id'] ?? null;
+
+if (!$exam_id) {
+    echo json_encode(["status" => "error", "message" => "Exam ID missing"]);
+    exit;
 }
 
-// 🔥 GET exam_id safely
-$exam_id = isset($_GET['exam_id']) ? (int)$_GET['exam_id'] : 0;
+// exam duration
+$exam = mysqli_query($conn, "SELECT duration FROM exams WHERE exam_id='$exam_id'");
+$examRow = mysqli_fetch_assoc($exam);
+$duration = $examRow['duration'] ?? 0;
 
-if ($exam_id <= 0) {
-    echo json_encode([
-        "status" => "error",
-        "message" => "exam_id is required"
-    ]);
-    exit();
-}
+// questions
+$qRes = mysqli_query($conn, "
+    SELECT question_id, question_text 
+    FROM questions 
+    WHERE exam_id='$exam_id'
+");
 
-// 🔥 MAIN QUERY
-$sql = "SELECT * FROM questions WHERE exam_id = $exam_id";
-$result = mysqli_query($conn, $sql);
-
-// ❌ DB ERROR HANDLING (IMPORTANT FIX)
-if (!$result) {
-    echo json_encode([
-        "status" => "error",
-        "message" => mysqli_error($conn)
-    ]);
-    exit();
-}
-
-=======
-header("Content-Type: application/json");
-include "../config/db.php";
-
-$exam_id = $_GET['exam_id'];
-
-// ✅ GET EXAM (FOR TIMER)
-$examQuery = "SELECT * FROM exams WHERE exam_id = '$exam_id'";
-$examResult = mysqli_query($conn, $examQuery);
-$exam = mysqli_fetch_assoc($examResult);
-
-// ✅ GET QUESTIONS
->>>>>>> 7b1d635c3d657bc83e226564400a0acd1eedee12
 $questions = [];
 
-$qQuery = "SELECT * FROM questions WHERE exam_id = '$exam_id'";
-$qResult = mysqli_query($conn, $qQuery);
-
-<<<<<<< HEAD
-    $question_id = (int)$q['question_id'];
-
-    // 🔥 FIX: check option query failure
-    $opt_sql = "SELECT option_text, is_correct 
-                FROM options 
-                WHERE question_id = $question_id";
-
-    $opt_result = mysqli_query($conn, $opt_sql);
-
-    $options = [];
-
-    if ($opt_result) {
-        while ($opt = mysqli_fetch_assoc($opt_result)) {
-            $options[] = $opt;
-        }
-=======
-while ($q = mysqli_fetch_assoc($qResult)) {
+while ($q = mysqli_fetch_assoc($qRes)) {
 
     $qid = $q['question_id'];
 
-    // ✅ GET OPTIONS FOR EACH QUESTION
-    $optQuery = "SELECT * FROM options WHERE question_id = '$qid'";
-    $optResult = mysqli_query($conn, $optQuery);
+    $optRes = mysqli_query($conn, "
+        SELECT option_id, option_text 
+        FROM options 
+        WHERE question_id='$qid'
+    ");
 
     $options = [];
 
-    while ($opt = mysqli_fetch_assoc($optResult)) {
-        $options[] = $opt;
->>>>>>> 7b1d635c3d657bc83e226564400a0acd1eedee12
+    while ($opt = mysqli_fetch_assoc($optRes)) {
+        $options[] = [
+            "option_id" => intval($opt['option_id']),
+            "option_text" => $opt['option_text']
+        ];
     }
 
-    $q['options'] = $options;
-    $questions[] = $q;
+    $questions[] = [
+        "question_id" => intval($qid),
+        "question_text" => $q['question_text'],
+        "options" => $options
+    ];
 }
 
-<<<<<<< HEAD
-// 🔥 SAFE OUTPUT
-=======
-// ✅ FINAL RESPONSE
->>>>>>> 7b1d635c3d657bc83e226564400a0acd1eedee12
 echo json_encode([
     "status" => "success",
-    "duration" => $exam['duration'],
+    "duration" => $duration,
     "questions" => $questions
 ]);
 ?>
