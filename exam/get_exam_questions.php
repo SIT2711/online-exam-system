@@ -1,42 +1,59 @@
 <?php
-header("Content-Type: application/json");
 include "../config/db.php";
 
-$exam_id = $_GET['exam_id'];
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json");
 
-// ✅ GET EXAM (FOR TIMER)
-$examQuery = "SELECT * FROM exams WHERE exam_id = '$exam_id'";
-$examResult = mysqli_query($conn, $examQuery);
-$exam = mysqli_fetch_assoc($examResult);
+$exam_id = $_GET['exam_id'] ?? null;
 
-// ✅ GET QUESTIONS
+if (!$exam_id) {
+    echo json_encode(["status" => "error", "message" => "Exam ID missing"]);
+    exit;
+}
+
+// exam duration
+$exam = mysqli_query($conn, "SELECT duration FROM exams WHERE exam_id='$exam_id'");
+$examRow = mysqli_fetch_assoc($exam);
+$duration = $examRow['duration'] ?? 0;
+
+// questions
+$qRes = mysqli_query($conn, "
+    SELECT question_id, question_text 
+    FROM questions 
+    WHERE exam_id='$exam_id'
+");
+
 $questions = [];
 
-$qQuery = "SELECT * FROM questions WHERE exam_id = '$exam_id'";
-$qResult = mysqli_query($conn, $qQuery);
-
-while ($q = mysqli_fetch_assoc($qResult)) {
+while ($q = mysqli_fetch_assoc($qRes)) {
 
     $qid = $q['question_id'];
 
-    // ✅ GET OPTIONS FOR EACH QUESTION
-    $optQuery = "SELECT * FROM options WHERE question_id = '$qid'";
-    $optResult = mysqli_query($conn, $optQuery);
+    $optRes = mysqli_query($conn, "
+        SELECT option_id, option_text 
+        FROM options 
+        WHERE question_id='$qid'
+    ");
 
     $options = [];
 
-    while ($opt = mysqli_fetch_assoc($optResult)) {
-        $options[] = $opt;
+    while ($opt = mysqli_fetch_assoc($optRes)) {
+        $options[] = [
+            "option_id" => intval($opt['option_id']),
+            "option_text" => $opt['option_text']
+        ];
     }
 
-    $q['options'] = $options;
-    $questions[] = $q;
+    $questions[] = [
+        "question_id" => intval($qid),
+        "question_text" => $q['question_text'],
+        "options" => $options
+    ];
 }
 
-// ✅ FINAL RESPONSE
 echo json_encode([
     "status" => "success",
-    "duration" => $exam['duration'],
+    "duration" => $duration,
     "questions" => $questions
 ]);
 ?>
