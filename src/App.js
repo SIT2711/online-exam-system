@@ -24,6 +24,7 @@ import EditExam from "./pages/EditExam";
 import EditQuestion from "./pages/EditQuestion";
 
 import AttemptExam from "./pages/AttemptExam";
+import ExamResult from "./pages/ExamResult";
 
 /* CSS */
 import "./styles/LoginForm.css";
@@ -98,7 +99,7 @@ function App() {
             }
           />
 
-          {/* View Exam */}
+          {/* View / Edit */}
           <Route
             path="/viewExam/:id"
             element={
@@ -108,7 +109,6 @@ function App() {
             }
           />
 
-          {/* Edit Question */}
           <Route
             path="/edit-question/:id"
             element={
@@ -118,7 +118,25 @@ function App() {
             }
           />
 
-          {/* ✅ FIXED: ONLY ONE AttemptExam route */}
+          <Route
+            path="/edit-exam/:id"
+            element={
+              <ProtectedRoute allowedRoles={["teacher", "admin"]}>
+                <Layout><EditExam /></Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/addquestion"
+            element={
+              <ProtectedRoute allowedRoles={["admin", "teacher"]}>
+                <Layout><AddQuestion /></Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Student Flow */}
           <Route
             path="/attemptexam/:exam_id"
             element={
@@ -128,22 +146,11 @@ function App() {
             }
           />
 
-          {/* Submit Exam */}
           <Route
             path="/submitexam"
             element={
               <ProtectedRoute allowedRoles={["student"]}>
                 <Layout><SubmitExam /></Layout>
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Add Question */}
-          <Route
-            path="/addquestion"
-            element={
-              <ProtectedRoute allowedRoles={["admin", "teacher"]}>
-                <Layout><AddQuestion /></Layout>
               </ProtectedRoute>
             }
           />
@@ -158,11 +165,12 @@ function App() {
             }
           />
 
+          {/* ✅ FIXED ROUTE */}
           <Route
-            path="/result"
+            path="/exam-result/:score"
             element={
               <ProtectedRoute allowedRoles={["student"]}>
-                <Layout><Result /></Layout>
+                <Layout><ExamResult /></Layout>
               </ProtectedRoute>
             }
           />
@@ -182,16 +190,6 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["admin", "teacher", "student"]}>
                 <Layout><EditProfile /></Layout>
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Edit Exam */}
-          <Route
-            path="/edit-exam/:id"
-            element={
-              <ProtectedRoute allowedRoles={["teacher", "admin"]}>
-                <Layout><EditExam /></Layout>
               </ProtectedRoute>
             }
           />

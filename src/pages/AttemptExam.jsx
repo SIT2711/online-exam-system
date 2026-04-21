@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import ExamTimer from "./ExamTimer";
+import SubmitExam from "./SubmitExam";
 import "../styles/AttemptExam.css";
 
 function AttemptExam() {
@@ -12,6 +13,7 @@ function AttemptExam() {
   const [duration, setDuration] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [showSubmit, setShowSubmit] = useState(false);
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
@@ -38,11 +40,11 @@ function AttemptExam() {
       .finally(() => setLoading(false));
   }, [exam_id]);
 
-  // ================= HANDLE ANSWER =================
-  const handleOptionChange = (qId, option) => {
+  // ================= ANSWER HANDLER =================
+  const handleOptionChange = (qId, optionId) => {
     setAnswers((prev) => ({
       ...prev,
-      [qId]: option,
+      [qId]: optionId,
     }));
   };
 
@@ -54,7 +56,9 @@ function AttemptExam() {
       formData.append("student_id", user.user_id);
       formData.append("answers", JSON.stringify(answers));
 
-      await fetch(
+      console.log("SENDING ANSWERS:", answers);
+
+      const res = await fetch(
         "http://localhost/online-exam-system/attempt/submit_exam.php",
         {
           method: "POST",
@@ -62,13 +66,18 @@ function AttemptExam() {
         }
       );
 
-      alert("Exam Submitted Successfully!");
+      const data = await res.json();
 
-      // ✅ REDIRECT AFTER SUBMIT
-      navigate("/result");   // or "/student-dashboard"
+      console.log("SUBMIT RESPONSE:", data);
+
+      return {
+        score: data.score || 0,
+        percentage: data.percentage || 0,
+      };
 
     } catch (err) {
       console.error("SUBMIT ERROR:", err);
+      return { score: 0, percentage: 0 };
     }
   };
 
@@ -86,7 +95,7 @@ function AttemptExam() {
 
       {/* TIMER */}
       <div className="timer-container">
-        <ExamTimer duration={duration} onTimeUp={handleSubmit} />
+        <ExamTimer duration={duration} onTimeUp={() => setShowSubmit(true)} />
       </div>
 
       {/* NO QUESTIONS */}
@@ -108,12 +117,12 @@ function AttemptExam() {
                   type="radio"
                   name={currentQuestion.question_id}
                   checked={
-                    answers[currentQuestion.question_id] === opt.option_text
+                    answers[currentQuestion.question_id] === opt.option_id
                   }
                   onChange={() =>
                     handleOptionChange(
                       currentQuestion.question_id,
-                      opt.option_text
+                      opt.option_id
                     )
                   }
                 />
@@ -133,7 +142,10 @@ function AttemptExam() {
             </button>
 
             {currentIndex === questions.length - 1 ? (
-              <button className="submit-btn" onClick={handleSubmit}>
+              <button
+                className="submit-btn"
+                onClick={() => setShowSubmit(true)}
+              >
                 Submit Exam
               </button>
             ) : (
@@ -147,6 +159,18 @@ function AttemptExam() {
           </div>
         </>
       )}
+
+      {/* SUBMIT POPUP */}
+      {showSubmit && (
+        <SubmitExam
+          unansweredQuestions={
+            questions.length - Object.keys(answers).length
+          }
+          onCancel={() => setShowSubmit(false)}
+          onSubmit={handleSubmit}
+        />
+      )}
+
     </div>
   );
 }
