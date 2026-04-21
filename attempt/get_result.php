@@ -1,61 +1,36 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+include "../config/db.php";
 
-header("Access-Control-Allow-Origin: http://localhost:3000");
+header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
 
-include("../config/db.php");
+$user_id = $_GET['user_id'];
 
-// ✅ Validate input
-if (!isset($_GET['user_id']) || !isset($_GET['role'])) {
-    echo json_encode([
-        "status" => "error",
-        "message" => "Missing user_id or role"
-    ]);
-    exit();
-}
+$query = "
+SELECT 
+  ea.exam_id,
+  e.exam_name,
+  u.name AS student_name,
+  t.name AS teacher_name,
+  ea.score,
+  ea.end_time AS created_at,
+  (SELECT COUNT(*) FROM questions WHERE exam_id = ea.exam_id) AS total_questions,
+  ROUND((ea.score / 
+        (SELECT COUNT(*) FROM questions WHERE exam_id = ea.exam_id)
+       ) * 100, 2) AS percentage
+FROM exam_attempts ea
+JOIN exams e ON e.exam_id = ea.exam_id
+JOIN users u ON u.user_id = ea.student_id
+LEFT JOIN users t ON t.user_id = e.teacher_id
+WHERE ea.student_id = '$user_id'
+AND ea.status = 'completed'
+ORDER BY ea.end_time DESC
+";
 
-$user_id = intval($_GET['user_id']);
-$role = $_GET['role'];
-
-// ✅ FIXED SQL (using teacher_id)
-$sql = "SELECT 
-            s.full_name AS student_name,
-            t.full_name AS teacher_name,
-            e.exam_title AS exam_name,
-            r.total_marks AS total_questions,
-            r.obtained_marks AS correct_answers,
-            r.percentage AS score,
-            r.created_at
-        FROM results r
-        JOIN exam_attempts ea ON r.attempt_id = ea.attempt_id
-        JOIN users s ON ea.student_id = s.user_id
-        JOIN exams e ON ea.exam_id = e.exam_id
-        JOIN users t ON e.teacher_id = t.user_id";
-
-// ✅ Role-based filtering
-if ($role === "student") {
-    $sql .= " WHERE s.user_id = $user_id";
-} elseif ($role === "teacher") {
-    $sql .= " WHERE e.teacher_id = $user_id";
-}
-// admin = no filter (see all)
-
-// ✅ Execute
-$result = $conn->query($sql);
-
-if (!$result) {
-    echo json_encode([
-        "status" => "error",
-        "message" => $conn->error
-    ]);
-    exit();
-}
+$result = mysqli_query($conn, $query);
 
 $data = [];
-
-while ($row = $result->fetch_assoc()) {
+while ($row = mysqli_fetch_assoc($result)) {
     $data[] = $row;
 }
 
@@ -63,6 +38,4 @@ echo json_encode([
     "status" => "success",
     "data" => $data
 ]);
-
-$conn->close();
 ?>
