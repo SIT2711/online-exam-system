@@ -4,112 +4,74 @@ include "../config/db.php";
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
 
-// ===== FORCE CLEAN JSON (NO HTML ERRORS) =====
-mysqli_report(MYSQLI_REPORT_OFF);
-
-// ===== INPUT =====
 $exam_id = $_POST['exam_id'] ?? null;
 $student_id = $_POST['student_id'] ?? null;
 $answers_raw = $_POST['answers'] ?? null;
 
 if (!$exam_id || !$student_id || !$answers_raw) {
-    echo json_encode(["status" => "error", "message" => "Missing input"]);
+    echo json_encode(["status"=>"error","message"=>"Missing input"]);
     exit;
 }
 
 $answers = json_decode($answers_raw, true);
-if (!is_array($answers)) {
-    echo json_encode(["status" => "error", "message" => "Invalid answers"]);
-    exit;
-}
 
-// ===== GET OR CREATE ATTEMPT =====
-$attempt_id = null;
-
-$check = mysqli_query($conn, "
-    SELECT attempt_id 
-    FROM exam_attempts 
-    WHERE exam_id='$exam_id' AND student_id='$student_id'
-    LIMIT 1
+// ================= CREATE ATTEMPT =================
+mysqli_query($conn, "
+INSERT INTO exam_attempts (exam_id, student_id, start_time, status)
+VALUES ('$exam_id','$student_id',NOW(),'completed')
 ");
 
-if ($check && mysqli_num_rows($check) > 0) {
-    $row = mysqli_fetch_assoc($check);
-    $attempt_id = $row['attempt_id'];
-} else {
-    mysqli_query($conn, "
-        INSERT INTO exam_attempts (exam_id, student_id, start_time, status)
-        VALUES ('$exam_id','$student_id', NOW(), 'in_progress')
-    ");
-    $attempt_id = mysqli_insert_id($conn);
-}
+$attempt_id = mysqli_insert_id($conn);
 
-// ===== SCORE =====
+// ================= SCORE =================
 $score = 0;
 
-foreach ($answers as $question_id => $selected_option_id) {
+foreach ($answers as $q => $opt) {
 
-    $question_id = intval($question_id);
-    $selected_option_id = intval($selected_option_id);
+    $q = intval($q);
+    $opt = intval($opt);
 
-    // get correct option
     $res = mysqli_query($conn, "
-        SELECT option_id 
-        FROM options 
-        WHERE question_id = $question_id AND is_correct = 1
-        LIMIT 1
+        SELECT option_id FROM options
+        WHERE question_id=$q AND is_correct=1
     ");
 
     $isCorrect = 0;
 
-    if ($res && $row = mysqli_fetch_assoc($res)) {
-        if (intval($row['option_id']) == $selected_option_id) {
-            $score++;
+    if ($row = mysqli_fetch_assoc($res)) {
+        if ($row['option_id'] == $opt) {
             $isCorrect = 1;
+            $score++;
         }
     }
 
-    // save answer (MATCH YOUR DB)
     mysqli_query($conn, "
-        INSERT INTO student_answers 
-        (attempt_id, exam_id, student_id, question_id, selected_option_id, is_correct)
-        VALUES (
-            '$attempt_id',
-            '$exam_id',
-            '$student_id',
-            '$question_id',
-            '$selected_option_id',
-            '$isCorrect'
-        )
+        INSERT INTO student_answers
+        (attempt_id, exam_id, student_id, question_id, selected_option_id, answer_text, is_correct)
+        VALUES
+        ('$attempt_id','$exam_id','$student_id','$q','$opt','','$isCorrect')
     ");
 }
 
-// ===== UPDATE RESULT =====
+// ================= TOTAL =================
+$total = mysqli_fetch_assoc(mysqli_query($conn,"
+SELECT COUNT(*) as total FROM questions WHERE exam_id='$exam_id'
+"))['total'];
+
+$percentage = ($total > 0) ? round(($score/$total)*100) : 0;
+
+// ================= RESULT =================
 mysqli_query($conn, "
-    UPDATE exam_attempts 
-    SET end_time = NOW(), status='completed', score='$score'
-    WHERE attempt_id='$attempt_id'
+INSERT INTO results
+(attempt_id, total_marks, obtained_marks, percentage, created_at)
+VALUES
+('$attempt_id','$total','$score','$percentage',NOW())
 ");
 
-// ===== CALCULATE TOTAL QUESTIONS FROM DB =====
-$resTotal = mysqli_query($conn, "
-    SELECT COUNT(*) as total 
-    FROM questions 
-    WHERE exam_id = '$exam_id'
-");
-
-$rowTotal = mysqli_fetch_assoc($resTotal);
-$totalQuestions = intval($rowTotal['total']);
-
-// ===== CALCULATE PERCENTAGE =====
-$percentage = $totalQuestions > 0
-    ? round(($score / $totalQuestions) * 100)
-    : 0;
-
-// ===== FINAL RESPONSE =====
+// ================= RESPONSE =================
 echo json_encode([
-    "status" => "success",
-    "score" => intval($score),
-    "percentage" => $percentage
+    "status"=>"success",
+    "score"=>$score,
+    "percentage"=>$percentage
 ]);
-exit;
+?>
