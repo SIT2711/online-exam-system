@@ -13,9 +13,9 @@ const Profile = () => {
     join_date: ''
   });
 
+  const [stats, setStats] = useState({});
   const navigate = useNavigate();
 
-  // ================= FETCH PROFILE =================
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user") || "null");
 
@@ -24,28 +24,53 @@ const Profile = () => {
       return;
     }
 
+    // ✅ FIX: normalize id → user_id
+    const user_id = storedUser.user_id || storedUser.id;
+
+    // ================= PROFILE =================
     fetch('http://localhost/online-exam-system/auth/profile.php', {
-      method: "POST",   // ✅ changed to POST
+      method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        user_id: storedUser.id
-      })
+      body: JSON.stringify({ user_id })
     })
       .then(res => res.json())
       .then(data => {
         if (data.status === "success") {
           setUser(data.user);
         } else {
-          console.log(data.message);
           navigate("/login");
         }
-      })
-      .catch(err => console.log(err));
+      });
+
+    // ================= STATS =================
+    let url = "";
+
+    if (storedUser.role === "student") {
+      url = "http://localhost/online-exam-system/stats/student_stats.php";
+    } else if (storedUser.role === "teacher") {
+      url = "http://localhost/online-exam-system/stats/teacher_stats.php";
+    } else {
+      url = "http://localhost/online-exam-system/stats/admin_stats.php";
+    }
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ user_id })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success") {
+          setStats(data);
+        }
+      });
+
   }, [navigate]);
 
-  // ================= NAVIGATION =================
   const handleUpdateProfile = () => {
     navigate('/editprofile');
   };
@@ -85,17 +110,48 @@ const Profile = () => {
         <div className="card">
           <h3>STATISTICS</h3>
 
-          <div className="stat-card">
-            <p>Total Exams Attempted: 5</p>
-          </div>
+          {user.role === "student" && (
+            <>
+              <div className="stat-card">
+                <p>Total Exams Attempted: {stats.total_attempted || 0}</p>
+              </div>
+              <div className="stat-card">
+                <p>Completed Exams: {stats.completed || 0}</p>
+              </div>
+              <div className="stat-card">
+                <p>Last Score: {stats.last_score || 0}%</p>
+              </div>
+            </>
+          )}
 
-          <div className="stat-card">
-            <p>Completed Exams: 3</p>
-          </div>
+          {user.role === "teacher" && (
+            <>
+              <div className="stat-card">
+                <p>Total Exams Created: {stats.total_exams || 0}</p>
+              </div>
+              <div className="stat-card">
+                <p>Total Students Evaluated: {stats.total_students || 0}</p>
+              </div>
+              <div className="stat-card">
+                <p>Average Student Score: {stats.avg_score || 0}%</p>
+              </div>
+            </>
+          )}
 
-          <div className="stat-card">
-            <p>Last Score: 80%</p>
-          </div>
+          {user.role === "admin" && (
+            <>
+              <div className="stat-card">
+                <p>Total Users: {stats.total_users || 0}</p>
+              </div>
+              <div className="stat-card">
+                <p>Total Exams Created: {stats.total_exams || 0}</p>
+              </div>
+              <div className="stat-card">
+                <p>Total Completed Exams: {stats.completed_exams || 0}</p>
+              </div>
+            </>
+          )}
+
         </div>
 
       </div>

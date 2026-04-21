@@ -17,6 +17,27 @@ function AttemptExam() {
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
+  // ================= START EXAM =================
+  const startExam = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost/online-exam-system/attempt/start_exam.php",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            exam_id: exam_id,
+            student_id: user.user_id || user.id
+          })
+        }
+      );
+      const result = await response.json();
+      console.log("START EXAM:", result);
+    } catch (err) {
+      console.error("START EXAM ERROR:", err);
+    }
+  };
+
   // ================= FETCH EXAM =================
   useEffect(() => {
     setLoading(true);
@@ -31,6 +52,7 @@ function AttemptExam() {
         if (data.status === "success") {
           setQuestions(data.questions || []);
           setDuration(Number(data.duration) || 0);
+          startExam();
         } else {
           setQuestions([]);
           setDuration(0);
@@ -53,7 +75,7 @@ function AttemptExam() {
     try {
       const formData = new FormData();
       formData.append("exam_id", exam_id);
-      formData.append("student_id", user.user_id);
+      formData.append("student_id", user.user_id || user.id);
       formData.append("answers", JSON.stringify(answers));
 
       console.log("SENDING ANSWERS:", answers);
