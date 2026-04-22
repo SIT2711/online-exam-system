@@ -13,6 +13,7 @@ const ExamList = () => {
   const [loadingId, setLoadingId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [alreadyAttempted, setAlreadyAttempted] = useState(false);
 
   // ✅ NEW (student feature)
   const [examCodeInput, setExamCodeInput] = useState("");
@@ -79,6 +80,30 @@ const ExamList = () => {
       else if (now > end) status = "ended";
 
       setSearchedExam({ ...exam, status });
+      // ✅ CHECK IF STUDENT ALREADY ATTEMPTED
+      try {
+        const attemptRes = await fetch(
+          "http://localhost/online-exam-system/attempt/check_attempt.php",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              student_id: userId,
+              exam_id: exam.exam_id,
+            }),
+          }
+        );
+
+        const attemptData = await attemptRes.json();
+
+        if (attemptData.exists === true) {
+          setAlreadyAttempted(true);
+        } else {
+          setAlreadyAttempted(false);
+        }
+      } catch (err) {
+        console.error("Attempt check error:", err);
+      }
 
     } catch (err) {
       console.error(err);
@@ -86,43 +111,43 @@ const ExamList = () => {
     }
   };
 
- const handleDelete = async (id) => {
-  if (!window.confirm("Are you sure you want to delete this exam?")) return;
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this exam?")) return;
 
-  setLoadingId(id);
+    setLoadingId(id);
 
-  try {
-    const res = await fetch(
-      "http://localhost/online-exam-system/exam/delete_exam.php",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id }),
+    try {
+      const res = await fetch(
+        "http://localhost/online-exam-system/exam/delete_exam.php",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.status === "success") {
+        const updatedList = examList.filter((e) => e.exam_id !== id);
+        setExamList(updatedList);
+
+        // ✅ FIX: Handle page adjustment
+        const totalAfterDelete = updatedList.length;
+        const newTotalPages = Math.ceil(totalAfterDelete / examsPerPage) || 1;
+
+        if (currentPage > newTotalPages) {
+          setCurrentPage(newTotalPages);
+        }
+      } else {
+        alert("Error deleting exam");
       }
-    );
-
-    const data = await res.json();
-
-    if (data.status === "success") {
-      const updatedList = examList.filter((e) => e.exam_id !== id);
-      setExamList(updatedList);
-
-      // ✅ FIX: Handle page adjustment
-      const totalAfterDelete = updatedList.length;
-      const newTotalPages = Math.ceil(totalAfterDelete / examsPerPage) || 1;
-
-      if (currentPage > newTotalPages) {
-        setCurrentPage(newTotalPages);
-      }
-    } else {
-      alert("Error deleting exam");
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingId(null);
     }
-  } catch (err) {
-    console.error(err);
-  } finally {
-    setLoadingId(null);
-  }
-};
+  };
 
   const handleEdit = (exam) => {
     navigate(`/edit-exam/${exam.exam_id}`, { state: exam });
@@ -236,40 +261,47 @@ const ExamList = () => {
           </div>
 
           <div className="action-buttons" style={{ flexDirection: "column", alignItems: "center" }}>
-  
-  {/* STATUS TEXT */}
-  {searchedExam.status === "not_started" && (
-    <p style={{ color: "orange", marginBottom: "5px" }}>
-      Exam not started yet
-    </p>
-  )}
 
-  {searchedExam.status === "ended" && (
-    <p style={{ color: "red", marginBottom: "5px" }}>
-      Exam time is over
-    </p>
-  )}
+            {/* STATUS TEXT */}
+            {searchedExam.status === "not_started" && (
+              <p style={{ color: "orange", marginBottom: "5px" }}>
+                Exam not started yet
+              </p>
+            )}
 
-  {searchedExam.status === "active" && (
-    <p style={{ color: "green", marginBottom: "5px" }}>
-      Exam is live
-    </p>
-  )}
+            {searchedExam.status === "ended" && (
+              <p style={{ color: "red", marginBottom: "5px" }}>
+                Exam time is over
+              </p>
+            )}
 
-  {/* BUTTON */}
-  <button
-    className="start-exam-btn"
-    style={{ width: "100%" }}   // 🔥 IMPORTANT
-    disabled={searchedExam.status !== "active"}
-    onClick={() =>
-      navigate(`/attemptexam/${searchedExam.exam_id}`) 
-    }
-  >
-    {searchedExam.status === "active"
-      ? "Start Exam"
-      : "Not Available"}
-  </button>
-</div>
+            {searchedExam.status === "active" && (
+              <p style={{ color: "green", marginBottom: "5px" }}>
+                Exam is live
+              </p>
+            )}
+
+            {/* BUTTON */}
+            {alreadyAttempted && (
+              <p style={{ color: "red", marginBottom: "5px" }}>
+                You have already attempted this exam
+              </p>
+            )}
+            <button
+              className="start-exam-btn"
+              style={{ width: "100%" }}
+              disabled={searchedExam.status !== "active" || alreadyAttempted}
+              onClick={() =>
+                navigate(`/attemptexam/${searchedExam.exam_id}`)
+              }
+            >
+              {alreadyAttempted
+                ? "Already Attempted"
+                : searchedExam.status === "active"
+                  ? "Start Exam"
+                  : "Not Available"}
+            </button>
+          </div>
         </div>
       )}
 
@@ -305,19 +337,28 @@ const ExamList = () => {
 
       {/* PAGINATION */}
       {userRole === "teacher" && totalPages > 1 && (
-        <div style={{ display: "flex", justifyContent: "center", margin: "24px 0" }}>
+        <div className="pagination">
           <button
+            className="pagination-btn"
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
           >
             Prev
           </button>
 
-          <span style={{ margin: "0 10px" }}>
-            Page {currentPage} of {totalPages}
-          </span>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button
+              key={page}
+              className={`pagination-number ${currentPage === page ? "active" : ""
+                }`}
+              onClick={() => setCurrentPage(page)}
+            >
+              {page}
+            </button>
+          ))}
 
           <button
+            className="pagination-btn"
             onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
           >
