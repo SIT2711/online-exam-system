@@ -1,11 +1,11 @@
 <?php
-// CORS headers first
+// CORS must be first - before any output
 header("Access-Control-Allow-Origin: http://localhost:3000");
-header("Access-Control-Allow-Methods: GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Accept");
 header("Content-Type: application/json");
 
-// Handle preflight
+// Handle preflight OPTIONS request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
@@ -13,12 +13,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 include "../config/db.php";
 
-$user_id = isset($_GET['user_id']) ? intval($_GET['user_id']) : 0;
+// Get teacher_id from request (for teacher role filter)
+$input = json_decode(file_get_contents("php://input"), true);
+$teacher_id = isset($input['teacher_id']) ? intval($input['teacher_id']) : 0;
 
-if ($user_id === 0) {
-    echo json_encode(["status" => "error", "message" => "Invalid user_id"]);
-    exit;
+// Debug log
+error_log("[get_all_results] teacher_id received: " . $teacher_id);
+
+// First check - verify attempts exist for this teacher
+if ($teacher_id > 0) {
+    $check = mysqli_query($conn, "SELECT COUNT(*) as cnt FROM exam_attempts ea JOIN exams e ON e.exam_id = ea.exam_id WHERE e.teacher_id = $teacher_id AND ea.status = 'completed'");
+    $checkRow = mysqli_fetch_assoc($check);
+    error_log("[get_all_results] Attempts found for teacher $teacher_id: " . $checkRow['cnt']);
 }
+
+// Build query - if teacher_id provided, filter by that teacher's exams
+$teacher_filter = $teacher_id > 0 ? "AND e.teacher_id = $teacher_id" : "";
 
 // Calculate percentage from actual data: (correct_answers / total_questions) * 100
 $query = "
@@ -45,15 +55,18 @@ LEFT JOIN (
   WHERE is_correct = 1
   GROUP BY attempt_id
 ) sa ON sa.attempt_id = ea.attempt_id
-WHERE ea.student_id = $user_id
-AND ea.status = 'completed'
+WHERE ea.status = 'completed' $teacher_filter
 ORDER BY ea.end_time DESC
 ";
+
+error_log("[get_all_results] SQL: " . $query);
 
 $result = mysqli_query($conn, $query);
 
 if (!$result) {
-    echo json_encode(["status" => "error", "message" => mysqli_error($conn)]);
+    $error = mysqli_error($conn);
+    error_log("[get_all_results] SQL Error: " . $error);
+    echo json_encode(["status" => "error", "message" => $error]);
     exit;
 }
 
@@ -61,6 +74,8 @@ $data = [];
 while ($row = mysqli_fetch_assoc($result)) {
     $data[] = $row;
 }
+
+error_log("[get_all_results] Rows returned: " . count($data));
 
 echo json_encode([
     "status" => "success",

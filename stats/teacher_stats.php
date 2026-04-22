@@ -26,20 +26,36 @@ $res2 = mysqli_query($conn, "SELECT COUNT(*) as total FROM exam_attempts ea JOIN
 $total_students = $res2 ? (int)mysqli_fetch_assoc($res2)['total'] : 0;
 error_log("[teacher_stats] total_students query result: " . $total_students);
 
-// AVG SCORE
-$res3 = mysqli_query($conn, "SELECT AVG(score) as avg_score FROM exam_attempts ea JOIN exams e ON ea.exam_id = e.exam_id WHERE e.teacher_id='$teacher_id' AND TRIM(ea.status)='completed'");
+// AVG PERCENTAGE (calculated from actual correct answers / total questions)
+$res3 = mysqli_query($conn, "
+    SELECT AVG(IFNULL(sa.correct_count, 0) / q.total_questions * 100) as avg_percentage
+    FROM exam_attempts ea
+    JOIN exams e ON ea.exam_id = e.exam_id
+    JOIN (
+        SELECT exam_id, COUNT(*) AS total_questions
+        FROM questions
+        GROUP BY exam_id
+    ) q ON q.exam_id = ea.exam_id
+    LEFT JOIN (
+        SELECT attempt_id, COUNT(*) AS correct_count
+        FROM student_answers
+        WHERE is_correct = 1
+        GROUP BY attempt_id
+    ) sa ON sa.attempt_id = ea.attempt_id
+    WHERE e.teacher_id='$teacher_id' AND TRIM(ea.status)='completed'
+");
 $avg = 0;
 if ($res3) {
     $row = mysqli_fetch_assoc($res3);
-    $avg = $row['avg_score'] !== null ? (float)$row['avg_score'] : 0;
+    $avg = $row['avg_percentage'] !== null ? (float)$row['avg_percentage'] : 0;
 }
-error_log("[teacher_stats] avg_score query result: " . $avg);
+error_log("[teacher_stats] avg_percentage query result: " . $avg);
 
 $result = [
     "status" => "success",
     "total_exams" => $total_exams,
     "total_students" => $total_students,
-    "avg_score" => round($avg, 2)
+    "avg_percentage" => round($avg, 2)
 ];
 error_log("[teacher_stats] Response: " . json_encode($result));
 echo json_encode($result);
