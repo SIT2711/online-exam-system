@@ -5,7 +5,7 @@ const SubmitExam = ({ unansweredQuestions, onCancel, onSubmit }) => {
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(0);
 
-  // ================= SUBMIT HANDLER =================
+  
   const handleSubmit = async () => {
     const result = await onSubmit();
 
@@ -72,5 +72,4 @@ const SubmitExam = ({ unansweredQuestions, onCancel, onSubmit }) => {
     </div>
   );
 };
-
 export default SubmitExam;
