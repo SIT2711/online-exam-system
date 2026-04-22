@@ -147,8 +147,8 @@ function ResultHistory() {
                         result.score > 80
                           ? "green"
                           : result.score < 40
-                          ? "red"
-                          : "black",
+                            ? "red"
+                            : "black",
                     }}
                   >
                     {parseFloat(result.score).toFixed(0)}%
@@ -166,30 +166,27 @@ function ResultHistory() {
         {/* 🔢 PAGINATION */}
         <div className="pagination">
           <button
-            onClick={() =>
-              setCurrentPage((prev) => Math.max(prev - 1, 1))
-            }
+            className="pagination-btn"
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
           >
             Prev
           </button>
 
-          {[...Array(totalPages)].map((_, index) => (
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
             <button
-              key={index}
-              className={currentPage === index + 1 ? "active" : ""}
-              onClick={() => setCurrentPage(index + 1)}
+              key={page}
+              className={`pagination-number ${currentPage === page ? "active" : ""
+                }`}
+              onClick={() => setCurrentPage(page)}
             >
-              {index + 1}
+              {page}
             </button>
           ))}
 
           <button
-            onClick={() =>
-              setCurrentPage((prev) =>
-                Math.min(prev + 1, totalPages)
-              )
-            }
+            className="pagination-btn"
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
           >
             Next

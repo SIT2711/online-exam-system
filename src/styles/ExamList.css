@@ -175,3 +175,64 @@ button:disabled {
 .view-btn:hover {
   background-color: #5a6268;
 }
+
+/* PAGINATION WRAPPER */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 25px;
+}
+
+/* NUMBER BUTTONS (square) */
+.pagination-number {
+  width: 32px;           /* 🔥 smaller */
+  height: 32px;
+  font-size: 13px;
+  border: 1px solid #14b8a6;
+  background: white;
+  color: #14b8a6;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+/* HOVER NUMBER */
+.pagination-number:hover {
+  background-color: #14b8a6;
+  color: white;
+}
+
+/* ACTIVE PAGE */
+.pagination-number.active {
+  background-color: #14b8a6;
+  color: white;
+  font-weight: bold;
+}
+
+/* PREV / NEXT (RECTANGLE, NOT SQUARE) */
+.pagination-btn {
+  padding: 6px 12px;     /* 🔥 flexible size */
+  font-size: 12px;
+  background-color: #14b8a6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+/* HOVER */
+.pagination-btn:hover:not(:disabled) {
+  background-color: #0f9f90;
+}
+
+/* DISABLED */
+.pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

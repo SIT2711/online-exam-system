@@ -71,33 +71,64 @@ tbody tr:nth-child(even) {
 tbody tr:hover {
   background-color: #e6f7f6;
 }
+
+/* PAGINATION WRAPPER */
 .pagination {
-  margin-top: 20px;
   display: flex;
   justify-content: center;
-  gap: 10px;
+  align-items: center;
+  gap: 6px;
+  margin-top: 25px;
 }
 
-.pagination button {
-  padding: 8px 12px;
-  border: none;
-  background-color: #e0e0e0;
+/* SAME SIZE FOR ALL BUTTONS */
+.pagination-btn,
+.pagination-number {
+  width: 30px;              /* 🔥 equal width */
+  height: 30px;             /* 🔥 equal height */
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
   cursor: pointer;
-  border-radius: 6px;
+  transition: 0.2s ease;
 }
 
-.pagination button:hover {
+/* PREV / NEXT */
+.pagination-btn {
+  background-color: #14b8a6;
+  color: white;
+  border: none;
+}
+
+/* HOVER PREV/NEXT */
+.pagination-btn:hover:not(:disabled) {
+  background-color: #0f9f90;
+}
+
+/* DISABLED */
+.pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* NUMBER BUTTONS */
+.pagination-number {
+  border: 1px solid #14b8a6;
+  background: white;
+  color: #14b8a6;
+}
+
+/* HOVER NUMBER */
+.pagination-number:hover {
   background-color: #14b8a6;
   color: white;
 }
 
-.pagination .active {
+/* ACTIVE PAGE */
+.pagination-number.active {
   background-color: #14b8a6;
   color: white;
   font-weight: bold;
-}
-
-.pagination button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
 }
