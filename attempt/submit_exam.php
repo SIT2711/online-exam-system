@@ -16,72 +16,77 @@ if (!$exam_id || !$student_id || !$answers_raw) {
 
 $answers = json_decode($answers_raw, true);
 
-if (!$answers) {
-    echo json_encode(["status"=>"error","message"=>"Invalid answers"]);
+if (!$answers || count($answers) == 0) {
+    echo json_encode(["status"=>"error","message"=>"No answers received"]);
     exit;
 }
 
-// ================= CREATE ATTEMPT =================
-$attemptQuery = mysqli_query($conn, "
-    INSERT INTO exam_attempts (exam_id, student_id, start_time, status)
-    VALUES ('$exam_id','$student_id',NOW(),'completed')
+// ================= CREATE / GET ATTEMPT =================
+$check = mysqli_query($conn, "
+    SELECT attempt_id 
+    FROM exam_attempts 
+    WHERE exam_id = '$exam_id' 
+    AND student_id = '$student_id'
+    AND status = 'in_progress'
+    LIMIT 1
 ");
 
-if (!$attemptQuery) {
-    die("Attempt Insert Error: " . mysqli_error($conn));
-}
-
-$attempt_id = mysqli_insert_id($conn);
-
-// ================= SCORE =================
-$score = 0;
-
-foreach ($answers as $q => $opt) {
-
-    $q = intval($q);
-    $opt = intval($opt);
-
-    // ================= FETCH OPTION DATA =================
-    $res = mysqli_query($conn, "
-        SELECT option_text, is_correct 
-        FROM options 
-        WHERE option_id = $opt
+if ($row = mysqli_fetch_assoc($check)) {
+    $attempt_id = $row['attempt_id'];
+} else {
+    $insertAttempt = mysqli_query($conn, "
+        INSERT INTO exam_attempts (exam_id, student_id, start_time, status)
+        VALUES ('$exam_id','$student_id',NOW(),'in_progress')
     ");
 
-    if (!$res) {
-        die("Fetch Error: " . mysqli_error($conn));
+    if (!$insertAttempt) {
+        die("Attempt Insert Error: " . mysqli_error($conn));
     }
 
-    $answer_text = "NOT_FOUND";
+    $attempt_id = mysqli_insert_id($conn);
+}
+
+// ================= CLEAN OLD ANSWERS =================
+mysqli_query($conn, "
+    DELETE FROM student_answers 
+    WHERE attempt_id = '$attempt_id'
+");
+
+// ================= SCORE CALCULATION =================
+$score = 0;
+
+foreach ($answers as $question_id => $option_id) {
+
+    $question_id = intval($question_id);
+    $option_id = intval($option_id);
+
+    $res = mysqli_query($conn, "
+        SELECT option_text, is_correct
+        FROM options
+        WHERE option_id = $option_id 
+        AND question_id = $question_id
+    ");
+
+    $answer_text = "INVALID";
     $isCorrect = 0;
 
     if ($row = mysqli_fetch_assoc($res)) {
 
-        // ✅ STORE REAL TEXT
         $answer_text = mysqli_real_escape_string($conn, $row['option_text']);
 
-        // ✅ CHECK CORRECTNESS
         if ($row['is_correct'] == 1) {
             $isCorrect = 1;
             $score++;
         }
-
-    } else {
-        // Debug case
-        $answer_text = "INVALID_OPTION_ID";
     }
 
-    // ================= INSERT STUDENT ANSWER =================
-    $insert = mysqli_query($conn, "
+    // INSERT INTO student_answers
+    mysqli_query($conn, "
         INSERT INTO student_answers
         (attempt_id, exam_id, student_id, question_id, selected_option_id, answer_text, is_correct)
         VALUES
-        ('$attempt_id','$exam_id','$student_id','$q','$opt','$answer_text','$isCorrect')
+        ('$attempt_id','$exam_id','$student_id','$question_id','$option_id','$answer_text','$isCorrect')
     ");
-
-    if (!$insert) {
-        die("Insert Error: " . mysqli_error($conn));
-    }
 }
 
 // ================= TOTAL QUESTIONS =================
@@ -97,22 +102,33 @@ $total = $totalRow['total'] ?? 0;
 // ================= PERCENTAGE =================
 $percentage = ($total > 0) ? round(($score / $total) * 100) : 0;
 
-// ================= SAVE RESULT =================
-$resultInsert = mysqli_query($conn, "
+// ================= INSERT RESULT =================
+mysqli_query($conn, "
     INSERT INTO results
     (attempt_id, total_marks, obtained_marks, percentage, created_at)
     VALUES
     ('$attempt_id','$total','$score','$percentage',NOW())
 ");
 
-if (!$resultInsert) {
-    die("Result Insert Error: " . mysqli_error($conn));
+
+$update = mysqli_query($conn, "
+    UPDATE exam_attempts 
+    SET 
+        score = '$score',
+        end_time = NOW(),
+        status = 'completed'
+    WHERE attempt_id = '$attempt_id'
+");
+
+if (!$update) {
+    die("Update Error: " . mysqli_error($conn));
 }
 
 // ================= RESPONSE =================
 echo json_encode([
     "status" => "success",
     "score" => $score,
-    "percentage" => $percentage
+    "percentage" => $percentage,
+    "attempt_id" => $attempt_id
 ]);
 ?>
