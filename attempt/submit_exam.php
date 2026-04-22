@@ -110,7 +110,7 @@ mysqli_query($conn, "
     ('$attempt_id','$total','$score','$percentage',NOW())
 ");
 
-// ================= FINAL UPDATE (MOST IMPORTANT) =================
+
 $update = mysqli_query($conn, "
     UPDATE exam_attempts 
     SET 
@@ -131,5 +131,4 @@ echo json_encode([
     "percentage" => $percentage,
     "attempt_id" => $attempt_id
 ]);
-
 ?>
