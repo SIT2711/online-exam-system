@@ -30,7 +30,7 @@ while ($q = mysqli_fetch_assoc($qRes)) {
     $qid = $q['question_id'];
 
     $optRes = mysqli_query($conn, "
-        SELECT option_id, option_text 
+        SELECT option_id, option_text, is_correct 
         FROM options 
         WHERE question_id='$qid'
     ");
@@ -40,7 +40,8 @@ while ($q = mysqli_fetch_assoc($qRes)) {
     while ($opt = mysqli_fetch_assoc($optRes)) {
         $options[] = [
             "option_id" => intval($opt['option_id']),
-            "option_text" => $opt['option_text']
+            "option_text" => $opt['option_text'],
+            "is_correct" => intval($opt['is_correct'])   // 🔥 ADD THIS LINE
         ];
     }
 
