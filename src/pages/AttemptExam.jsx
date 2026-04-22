@@ -6,7 +6,10 @@ import "../styles/AttemptExam.css";
 
 function AttemptExam() {
   const navigate = useNavigate();
-  const { exam_id } = useParams();
+
+  // ✅ FIX: safe param handling
+  const params = useParams();
+  const exam_id = params.exam_id || params.id;
 
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState({});
@@ -15,21 +18,27 @@ function AttemptExam() {
   const [loading, setLoading] = useState(true);
   const [showSubmit, setShowSubmit] = useState(false);
 
+  // ✅ FIX: safe student id
   const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
-  const student_id = storedUser.user_id || storedUser.id;
+  const student_id = storedUser.user_id || storedUser.id || 2;
 
   // ================= FETCH EXAM =================
   useEffect(() => {
+    if (!exam_id) return; // ✅ FIX
+
     fetch(
       `http://localhost/online-exam-system/exam/get_exam_questions.php?exam_id=${exam_id}`
     )
       .then((res) => res.json())
       .then((data) => {
+        console.log("API DATA:", data); // ✅ DEBUG
+
         if (data.status === "success") {
           setQuestions(data.questions || []);
           setDuration(Number(data.duration) || 0);
         }
       })
+      .catch((err) => console.error("Fetch Error:", err)) // ✅ FIX
       .finally(() => setLoading(false));
   }, [exam_id]);
 
@@ -44,10 +53,26 @@ function AttemptExam() {
   // ================= SUBMIT =================
   const handleSubmit = async () => {
     try {
+      // ✅ FIX: validations
+      if (!exam_id) {
+        alert("Exam ID missing");
+        return { score: 0, percentage: 0 };
+      }
+
       if (!student_id) {
         alert("Student not logged in");
         return { score: 0, percentage: 0 };
       }
+
+      if (Object.keys(answers).length === 0) {
+        alert("Please answer at least one question");
+        return { score: 0, percentage: 0 };
+      }
+
+      // ✅ DEBUG (VERY IMPORTANT)
+      console.log("exam_id:", exam_id);
+      console.log("student_id:", student_id);
+      console.log("answers:", answers);
 
       const formData = new FormData();
       formData.append("exam_id", exam_id);
@@ -62,7 +87,10 @@ function AttemptExam() {
         }
       );
 
-      return await res.json();
+      const data = await res.json();
+      console.log("RESULT:", data); // ✅ DEBUG
+
+      return data;
 
     } catch (err) {
       console.error(err);
