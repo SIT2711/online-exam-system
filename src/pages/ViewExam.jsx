@@ -17,7 +17,7 @@ function ViewExam() {
     )
       .then((res) => res.json())
       .then((data) => {
-        console.log("API RESPONSE:", data);
+        console.log("FULL DATA:", JSON.stringify(data, null, 2));
 
         // ✅ Handle both formats (important fix)
         if (data.status === "success") {
@@ -81,7 +81,7 @@ function ViewExam() {
       ) : (
         questions.map((q, index) => (
           <div key={q.question_id} className="question-card">
-            
+
             {/* QUESTION */}
             <h4>
               Q{index + 1}: {q.question_text}
@@ -93,7 +93,10 @@ function ViewExam() {
                 <li
                   key={i}
                   className={
-                    Number(opt.is_correct) === 1 ? "correct" : ""
+                    String(opt.is_correct) === "1" ||
+                      String(opt.is_correct) === "true"
+                      ? "correct"
+                      : ""
                   }
                 >
                   {String.fromCharCode(65 + i)}. {opt.option_text}

@@ -23,7 +23,6 @@ function EditQuestion() {
         if (data.status === "success") {
           const q = data.question;
 
-          // ✅ Convert value → A/B/C/D
           let correct = "";
           if (q.correctAnswer === q.optionA) correct = "A";
           else if (q.correctAnswer === q.optionB) correct = "B";
@@ -34,14 +33,12 @@ function EditQuestion() {
             ...q,
             correctAnswer: correct,
           });
-        } else {
-          alert("Question not found");
         }
       })
       .catch((err) => console.log("Fetch error:", err));
   }, [id]);
 
-  // ✅ HANDLE INPUT CHANGE
+  // ✅ INPUT CHANGE
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -49,47 +46,63 @@ function EditQuestion() {
     });
   };
 
-  // ✅ UPDATE QUESTION
-  const handleSubmit = (e) => {
+  // ✅ SUBMIT
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    fetch("http://localhost/online-exam-system/exam/update_question.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: Number(id),
-        question_text: form.question_text,
-        optionA: form.optionA,
-        optionB: form.optionB,
-        optionC: form.optionC,
-        optionD: form.optionD,
-
-        
-        correctAnswer:
-          form.correctAnswer === "A"
-            ? form.optionA
-            : form.correctAnswer === "B"
+    const payload = {
+      id: Number(id),
+      question_text: form.question_text,
+      optionA: form.optionA,
+      optionB: form.optionB,
+      optionC: form.optionC,
+      optionD: form.optionD,
+      correctAnswer:
+        form.correctAnswer === "A"
+          ? form.optionA
+          : form.correctAnswer === "B"
             ? form.optionB
             : form.correctAnswer === "C"
-            ? form.optionC
-            : form.optionD,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
+              ? form.optionC
+              : form.optionD,
+    };
+
+    console.log("SENDING:", payload);
+
+    try {
+      const res = await fetch(
+        "http://localhost/online-exam-system/exam/update_question.php",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      const text = await res.text();
+      console.log("RAW RESPONSE:", text);
+
+      try {
+        const data = JSON.parse(text);
+
         if (data.status === "success") {
           alert("Question updated successfully ✅");
           navigate(-1);
         } else {
           alert(data.message || "Update failed ❌");
         }
-      })
-      .catch((err) => {
-        console.log("Error:", err);
-        alert("Server not reachable ❌");
-      });
+
+      } catch (err) {
+        console.error("JSON ERROR:", text);
+        alert("Server returned invalid response ❌");
+      }
+
+    } catch (err) {
+      console.log("Error:", err);
+      alert("Server error ❌");
+    }
   };
 
   return (
@@ -111,55 +124,34 @@ function EditQuestion() {
 
             <div>
               <label>Option A</label>
-              <input
-                name="optionA"
-                value={form.optionA}
-                onChange={handleChange}
-                required
-              />
+              <input name="optionA" value={form.optionA} onChange={handleChange} required />
             </div>
 
             <div>
               <label>Option B</label>
-              <input
-                name="optionB"
-                value={form.optionB}
-                onChange={handleChange}
-                required
-              />
+              <input name="optionB" value={form.optionB} onChange={handleChange} required />
             </div>
 
             <div>
               <label>Option C</label>
-              <input
-                name="optionC"
-                value={form.optionC}
-                onChange={handleChange}
-                required
-              />
+              <input name="optionC" value={form.optionC} onChange={handleChange} required />
             </div>
 
             <div>
               <label>Option D</label>
-              <input
-                name="optionD"
-                value={form.optionD}
-                onChange={handleChange}
-                required
-              />
+              <input name="optionD" value={form.optionD} onChange={handleChange} required />
             </div>
 
           </div>
 
-          {/* ✅ FIXED: Show A/B/C/D instead of value */}
-          <label>Correct Answer (A / B / C / D)</label>
+          <label>Correct Answer</label>
           <select
             name="correctAnswer"
             value={form.correctAnswer}
             onChange={handleChange}
             required
           >
-            <option value="">Select correct option</option>
+            <option value="">Select</option>
             <option value="A">A</option>
             <option value="B">B</option>
             <option value="C">C</option>
