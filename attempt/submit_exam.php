@@ -30,6 +30,7 @@ $check = mysqli_query($conn, "
     SELECT attempt_id 
     FROM exam_attempts 
     WHERE exam_id='$exam_id' AND student_id='$student_id'
+    ORDER BY attempt_id DESC
     LIMIT 1
 ");
 
@@ -105,6 +106,13 @@ $totalQuestions = intval($rowTotal['total']);
 $percentage = $totalQuestions > 0
     ? round(($score / $totalQuestions) * 100)
     : 0;
+
+// ===== UPDATE RESULT =====
+$update_sql = "UPDATE exam_attempts SET end_time = NOW(), status='completed', score='$percentage' WHERE attempt_id='$attempt_id'";
+error_log("[submit_exam] Update SQL: " . $update_sql);
+$update_res = mysqli_query($conn, $update_sql);
+error_log("[submit_exam] Update result: " . ($update_res ? "success" : "failed: " . mysqli_error($conn)));
+error_log("[submit_exam] Affected rows: " . mysqli_affected_rows($conn));
 
 // ===== FINAL RESPONSE =====
 echo json_encode([
