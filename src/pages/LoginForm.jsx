@@ -119,7 +119,7 @@ function LoginForm() {
           )}
 
           <div className="extra-links">
-            <Link to="/">Forgot Password</Link> |{" "}
+            {/*<Link to="/">Forgot Password</Link> |{" "}*/}
             <Link to="/register">Create A New Account</Link>
           </div>
         </form>
