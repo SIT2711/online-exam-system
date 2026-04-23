@@ -119,7 +119,7 @@ const Profile = () => {
                 <p>Completed Exams: {stats.completed || 0}</p>
               </div>
               <div className="stat-card">
-                <p>Last Score: {stats.last_score || 0}%</p>
+                <p>Last Score: {parseFloat(stats.last_percentage || 0).toFixed(0)}%</p>
               </div>
             </>
           )}
@@ -133,7 +133,7 @@ const Profile = () => {
                 <p>Total Students Evaluated: {stats.total_students || 0}</p>
               </div>
               <div className="stat-card">
-                <p>Average Student Score: {stats.avg_score || 0}%</p>
+                <p>Average Student Percentage: {parseFloat(stats.avg_percentage || stats.avg_score || 0).toFixed(0)}%</p>
               </div>
             </>
           )}

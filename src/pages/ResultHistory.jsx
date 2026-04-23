@@ -30,13 +30,32 @@ function ResultHistory() {
     setRole(storedData?.role || "student");
   }, []);
 
-  // ✅ Fetch data
+  // ✅ Fetch data based on role (matching Result.jsx pattern)
   useEffect(() => {
     if (!userId) return;
 
-    fetch(
-      `http://localhost/online-exam-system/attempt/get_result.php?user_id=${userId}&role=${role}`
-    )
+    let url = "";
+    let options = {};
+
+    if (role === "admin") {
+      // Admin sees all results
+      url = "http://localhost/online-exam-system/attempt/get_all_results.php";
+      options = { method: "POST" };
+    } else if (role === "teacher") {
+      // Teacher sees only their exam results
+      url = "http://localhost/online-exam-system/attempt/get_all_results.php";
+      options = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ teacher_id: userId })
+      };
+    } else {
+      // Student sees only their results
+      url = `http://localhost/online-exam-system/attempt/get_result.php?user_id=${userId}`;
+      options = {};
+    }
+
+    fetch(url, options)
       .then((res) => res.json())
       .then((data) => {
         if (data.status === "success") {
@@ -138,20 +157,20 @@ function ResultHistory() {
                   <td>{result.exam_name}</td>
 
                   <td>
-                    {result.correct_answers}/{result.total_questions}
+                    {result.obtained_marks ?? result.score ?? 0}
                   </td>
 
                   <td
                     style={{
                       color:
-                        result.score > 80
+                        (result.percentage ?? result.score ?? 0) > 80
                           ? "green"
-                          : result.score < 40
+                          : (result.percentage ?? result.score ?? 0) < 40
                             ? "red"
                             : "black",
                     }}
                   >
-                    {parseFloat(result.score).toFixed(0)}%
+                    {parseFloat(result.percentage ?? result.score ?? 0).toFixed(0)}%
                   </td>
 
                   <td>
