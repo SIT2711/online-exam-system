@@ -111,7 +111,13 @@ function ResultHistory() {
       <div className="search-wrapper">
         <input
           type="text"
-          placeholder="Search by student, teacher, or exam..."
+          placeholder={
+            role === "student" 
+              ? "Search by exam..."
+              : role === "teacher"
+                ? "Search by student or exam..."
+                : "Search by student, teacher, or exam..."
+          }
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="search-input"
