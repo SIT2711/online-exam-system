@@ -182,7 +182,7 @@ const ExamList = () => {
   let visibleExams = sortedExams;
   let totalPages = 1;
 
-  if (userRole === "teacher") {
+  if (userRole === "teacher" || userRole === "admin") {
     totalPages = Math.ceil(sortedExams.length / examsPerPage) || 1;
     const startIdx = (currentPage - 1) * examsPerPage;
     visibleExams = sortedExams.slice(startIdx, startIdx + examsPerPage);
@@ -336,7 +336,7 @@ const ExamList = () => {
       )}
 
       {/* PAGINATION */}
-      {userRole === "teacher" && totalPages > 1 && (
+      {(userRole === "teacher" || userRole === "admin") && totalPages > 1 && (
         <div className="pagination">
           <button
             className="pagination-btn"

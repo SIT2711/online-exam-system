@@ -36,20 +36,7 @@ function Navbar() {
           </NavLink>
         </li>
         {/* Admin + Teacher - Exam */}
-      {/* {(user?.role === "admin" || user?.role === "teacher") && (
-        <li>
-          <NavLink to="/exam">
-            {({ isActive }) => (
-              <span className={isActive ? "active" : "link"}>
-              Exam
-              </span>
-                )}
-          </NavLink>
-        </li>
-        )} */}
-
-        {/* Student Only */}
-        {(user?.role === "student" || user?.role === "teacher") && (
+        {(user?.role === "admin" || user?.role === "teacher" || user?.role === "student") && (
           <li>
             <NavLink to="/exams">
               {({ isActive }) => (
@@ -60,6 +47,19 @@ function Navbar() {
             </NavLink>
           </li>
         )}
+
+        {/* Student Only */}
+        {/*{(user?.role === "student" || user?.role === "teacher") && (
+          <li>
+            <NavLink to="/exams">
+              {({ isActive }) => (
+                <span className={isActive ? "active" : "link"}>
+                  Exams
+                </span>
+              )}
+            </NavLink>
+          </li>
+        )}*/}
 
         {/* Result (All) */}
         <li>
