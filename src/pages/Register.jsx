@@ -53,7 +53,7 @@ function Register() {
 
       <div className="register-box">
 
-        <h1>Register</h1>
+        <h1>SIT Registration</h1>
         <h2>Create your account</h2>
 
         <form onSubmit={handleSubmit}>
