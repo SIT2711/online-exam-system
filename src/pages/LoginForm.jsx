@@ -71,7 +71,7 @@ function LoginForm() {
   return (
     <div className="login-container">
       <div className="login-card">
-        <h1>Exam System</h1>
+        <h1>SIT Examination System</h1>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
